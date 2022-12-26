@@ -38,7 +38,11 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0gF-ve-zwI" userLabel="Like Button">
-                                                    <rect key="frame" x="339" y="0.0" width="54" height="40"/>
+                                                    <rect key="frame" x="335" y="0.0" width="42" height="42"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="42" id="Eum-Oz-e75"/>
+                                                        <constraint firstAttribute="height" constant="42" id="L2w-Le-Sn8"/>
+                                                    </constraints>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" image="dont_like" title=""/>
                                                 </button>
@@ -60,12 +64,12 @@
                                                 <constraint firstAttribute="trailing" secondItem="hzR-kP-Hmp" secondAttribute="trailing" constant="16" id="1fc-s5-yv5"/>
                                                 <constraint firstItem="hzR-kP-Hmp" firstAttribute="top" secondItem="0YL-Zw-ZUn" secondAttribute="top" constant="4" id="1oU-lN-9S6"/>
                                                 <constraint firstItem="hzR-kP-Hmp" firstAttribute="leading" secondItem="0YL-Zw-ZUn" secondAttribute="leading" constant="16" id="44F-fv-509"/>
-                                                <constraint firstAttribute="trailing" secondItem="0gF-ve-zwI" secondAttribute="trailing" id="6mf-hC-1nf"/>
+                                                <constraint firstAttribute="trailing" secondItem="0gF-ve-zwI" secondAttribute="trailing" constant="16" id="6mf-hC-1nf"/>
                                                 <constraint firstItem="0gF-ve-zwI" firstAttribute="top" secondItem="0YL-Zw-ZUn" secondAttribute="top" id="AaW-RG-fUa"/>
                                                 <constraint firstAttribute="bottom" secondItem="hzR-kP-Hmp" secondAttribute="bottom" constant="4" id="E5X-t1-YtK"/>
-                                                <constraint firstItem="ibT-v7-AzW" firstAttribute="leading" secondItem="hzR-kP-Hmp" secondAttribute="leadingMargin" constant="8" id="YXL-m5-TgE"/>
+                                                <constraint firstItem="ibT-v7-AzW" firstAttribute="leading" secondItem="hzR-kP-Hmp" secondAttribute="leading" constant="16" id="YXL-m5-TgE"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ibT-v7-AzW" secondAttribute="trailing" id="qsP-LH-4b7"/>
-                                                <constraint firstItem="ibT-v7-AzW" firstAttribute="bottom" secondItem="hzR-kP-Hmp" secondAttribute="bottomMargin" constant="8" id="rf0-J6-mun"/>
+                                                <constraint firstItem="ibT-v7-AzW" firstAttribute="bottom" secondItem="hzR-kP-Hmp" secondAttribute="bottom" id="rf0-J6-mun"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -101,7 +105,7 @@
     </scenes>
     <resources>
         <image name="0" width="200" height="132"/>
-        <image name="dont_like" width="30" height="26"/>
+        <image name="dont_like" width="42" height="42"/>
         <namedColor name="black">
             <color red="0.10199999809265137" green="0.10599999874830246" blue="0.13300000131130219" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
