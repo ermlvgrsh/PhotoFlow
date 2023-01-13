@@ -15,7 +15,7 @@ class ImageListViewController: UIViewController {
         formatter.timeStyle = .none
         return formatter
     }()
-    
+    private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
     //MARK: Functions
     
@@ -34,36 +34,57 @@ class ImageListViewController: UIViewController {
         let activeOrNot = indexPath.row % 2 == 0 ? noActive : active
         cell.cellButton.setImage(activeOrNot, for: .normal)
     }
-    
+    // метод открытия нужной картинки в потоке через сегвей
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        //проверяем идентификатор сегвея, поскольку может быть больше одного
+        if segue.identifier == showSingleImageSegueIdentifier {
+//делаем преобразования типа для свойства .destination в ожидаемое для нас SingleImageViewContoller
+            let viewController = segue.destination as! SingleImageViewContoller
+//делаем преобразования типа для sender, если там будет что то другое - мы не сможем сконфигурировать переход
+            let indexPath = sender as! IndexPath
+//получаем индекс картинки и саму картинку из ресурсов
+            let image = UIImage(named: photosName[indexPath.row])
+//передаем картинку внутри SingleImageViewContoller
+            viewController.image = image
+        } else {
+// если неизвестный сегвей - передаем управление ему
+            super.prepare(for: segue, sender: sender)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+        
     }
     
     
 }
 // создал расширение нашего класса для использования протокола UITableViewDelegate
 extension ImageListViewController: UITableViewDelegate {
-    //метод отвечает за действия, которые будут выполнены при тапе по ячейке таблицы
-    //адрес ячейки который хранится в indexPath передается в качестве аргумента
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { }
-    //метод который отвечает за высоту ячейки
+//метод отвечает за действия, которые будут выполнены при тапе по ячейке таблицы
+//адрес ячейки который хранится в indexPath передается в качестве аргумента
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//выполняем переход сегвей из общего потока в конкретное фото
+// 1 аргумент - идентификатор, который мы задали в storyboard; 2 используется в override func prepare
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+    }
+//метод который отвечает за высоту ячейки
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let image = UIImage(named: photosName[indexPath.row]) else {
             return 0
         }
-        //добавляю через переменную метод высчитывания соотношения сторон
+//добавляю через переменную метод высчитывания соотношения сторон
         let imageCrop = image.getCropRatio()
         return tableView.frame.width / imageCrop
     }
 }
- //создал расширение для UIImage которое высчитывает соотношения сторон картинок
+//создал расширение для UIImage которое высчитывает соотношения сторон картинок
 extension UIImage {
     //метод который высчитывает соотношение сторон картинки
     func getCropRatio() -> CGFloat {
         
-        let widthRatio = CGFloat(self.size.width/self.size.height)
+        let widthRatio = CGFloat(self.size.width/self.size.height) 
         
         return widthRatio
     }
@@ -74,7 +95,7 @@ extension ImageListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return photosName.count
     }
-    //метод создания ячейки, наполнением ее данными и передачи в таблицу
+//метод создания ячейки, наполнением ее данными и передачи в таблицу
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImageListCell.reuseIdentifier, for: indexPath)
         guard let imageListCell = cell as? ImageListCell else {
@@ -85,5 +106,6 @@ extension ImageListViewController: UITableViewDataSource {
         return imageListCell
     }
     
+
     
 }
