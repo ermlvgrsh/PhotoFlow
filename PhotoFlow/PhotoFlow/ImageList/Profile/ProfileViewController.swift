@@ -9,7 +9,7 @@ class ProfileViewController: UIViewController {
     var profileDescription: UILabel?
     var exitButton: UIButton?
     
-    private func createProfilePicture() {
+    private func createProfilePictureAndName() {
         
         let profilePicture = UIImage(named: "profilePhoto")
         let profilePictureView = UIImageView(image: profilePicture)
@@ -17,17 +17,6 @@ class ProfileViewController: UIViewController {
         profilePictureView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(profilePictureView)
         
-        NSLayoutConstraint.activate([
-            profilePictureView.widthAnchor.constraint(equalToConstant: 70),
-            profilePictureView.heightAnchor.constraint(equalToConstant: 70),
-            profilePictureView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
-            profilePictureView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            
-            
-        ])
-        
-    }
-    private func createProfileDescription() {
         let fullName = UILabel()
         self.fullName = fullName
         fullName.font = .systemFont(ofSize: 23, weight: .bold)
@@ -54,16 +43,27 @@ class ProfileViewController: UIViewController {
         view.addSubview(profileDescription)
         
         NSLayoutConstraint.activate([
-            fullName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 130),
+
+      
+            profilePictureView.widthAnchor.constraint(equalToConstant: 70),
+            profilePictureView.heightAnchor.constraint(equalToConstant: 70),
+            profilePictureView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
+            profilePictureView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            
+            fullName.topAnchor.constraint(equalTo: profilePictureView.bottomAnchor, constant: 8),
             fullName.leadingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             
             nickName.leadingAnchor.constraint(equalTo: fullName.leadingAnchor),
             nickName.topAnchor.constraint(equalTo: fullName.bottomAnchor, constant: 8),
             
             profileDescription.leadingAnchor.constraint(equalTo: fullName.leadingAnchor),
-            profileDescription.topAnchor.constraint(equalTo: nickName.bottomAnchor, constant: 8)
-            ])
+            profileDescription.topAnchor.constraint(equalTo: nickName.bottomAnchor, constant: 8),
+            
+        ])
+        
     }
+   
+   
     private func createExitButton() {
         
        
@@ -86,8 +86,7 @@ class ProfileViewController: UIViewController {
     }
     private func makeProfilePage() {
         createExitButton()
-        createProfilePicture()
-        createProfileDescription()
+        createProfilePictureAndName()
     }
     
     
