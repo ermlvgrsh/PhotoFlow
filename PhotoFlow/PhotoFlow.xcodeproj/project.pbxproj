@@ -10,7 +10,7 @@
 		3754651C295F1B8300FFBEA9 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3754651B295F1B8300FFBEA9 /* SingleImageViewController.swift */; };
 		378F2D6A2952F78200BF7F72 /* ImageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 378F2D692952F78200BF7F72 /* ImageListCell.swift */; };
 		378F2D6E29530B7600BF7F72 /* YS Display-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 378F2D6C29530B7600BF7F72 /* YS Display-Medium.ttf */; };
-		378F2D6F29530B7600BF7F72 /* YS Display-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 378F2D6D29530B7600BF7F72 /* YS Display-Bold.ttf */; };
+		378F2D6F29530B7600BF7F72 /* ypBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 378F2D6D29530B7600BF7F72 /* ypBold.ttf */; };
 		37A609A0295ECA2F00DE1C0E /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A6099F295ECA2F00DE1C0E /* ProfileViewController.swift */; };
 		37AE1B9A2950515D008DA038 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AE1B992950515D008DA038 /* AppDelegate.swift */; };
 		37AE1B9C2950515D008DA038 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AE1B9B2950515D008DA038 /* SceneDelegate.swift */; };
@@ -44,7 +44,7 @@
 		3754651B295F1B8300FFBEA9 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 		378F2D692952F78200BF7F72 /* ImageListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListCell.swift; sourceTree = "<group>"; };
 		378F2D6C29530B7600BF7F72 /* YS Display-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Medium.ttf"; sourceTree = "<group>"; };
-		378F2D6D29530B7600BF7F72 /* YS Display-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Bold.ttf"; sourceTree = "<group>"; };
+		378F2D6D29530B7600BF7F72 /* ypBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ypBold.ttf; sourceTree = "<group>"; };
 		37A6099F295ECA2F00DE1C0E /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		37AE1B962950515D008DA038 /* PhotoFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37AE1B992950515D008DA038 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -116,7 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				378F2D6C29530B7600BF7F72 /* YS Display-Medium.ttf */,
-				378F2D6D29530B7600BF7F72 /* YS Display-Bold.ttf */,
+				378F2D6D29530B7600BF7F72 /* ypBold.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -280,7 +280,7 @@
 			files = (
 				37AE1BA62950515F008DA038 /* LaunchScreen.storyboard in Resources */,
 				378F2D6E29530B7600BF7F72 /* YS Display-Medium.ttf in Resources */,
-				378F2D6F29530B7600BF7F72 /* YS Display-Bold.ttf in Resources */,
+				378F2D6F29530B7600BF7F72 /* ypBold.ttf in Resources */,
 				37AE1BA32950515F008DA038 /* Assets.xcassets in Resources */,
 				37AE1BA12950515D008DA038 /* Main.storyboard in Resources */,
 			);

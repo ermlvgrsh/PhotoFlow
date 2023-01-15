@@ -20,7 +20,7 @@ class ProfileViewController: UIViewController {
         NSLayoutConstraint.activate([
             profilePictureView.widthAnchor.constraint(equalToConstant: 70),
             profilePictureView.heightAnchor.constraint(equalToConstant: 70),
-            profilePictureView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 52),
+            profilePictureView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             profilePictureView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             
             
@@ -30,8 +30,9 @@ class ProfileViewController: UIViewController {
     private func createProfileDescription() {
         let fullName = UILabel()
         self.fullName = fullName
-        fullName.font = UIFont(name: "System Font Bold", size: 23)
+        fullName.font = .systemFont(ofSize: 23, weight: .bold)
         fullName.text = "Екатерина Новикова"
+       
         fullName.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         fullName.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(fullName)
@@ -53,15 +54,12 @@ class ProfileViewController: UIViewController {
         view.addSubview(profileDescription)
         
         NSLayoutConstraint.activate([
-            fullName.widthAnchor.constraint(equalToConstant: 235),
             fullName.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 130),
-            fullName.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            fullName.leadingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             
-            nickName.heightAnchor.constraint(equalToConstant: 18),
             nickName.leadingAnchor.constraint(equalTo: fullName.leadingAnchor),
             nickName.topAnchor.constraint(equalTo: fullName.bottomAnchor, constant: 8),
             
-            profileDescription.heightAnchor.constraint(equalToConstant: 18),
             profileDescription.leadingAnchor.constraint(equalTo: fullName.leadingAnchor),
             profileDescription.topAnchor.constraint(equalTo: nickName.bottomAnchor, constant: 8)
             ])
@@ -81,8 +79,8 @@ class ProfileViewController: UIViewController {
         NSLayoutConstraint.activate([
             exitButton.widthAnchor.constraint(equalToConstant: 20),
             exitButton.heightAnchor.constraint(equalToConstant: 22),
-            exitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 76),
-            exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -26)
+            exitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 56),
+            exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -26)
         ])
         
     }

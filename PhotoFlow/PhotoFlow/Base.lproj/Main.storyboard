@@ -168,7 +168,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QUL-76-gIG" userLabel="Share Button">
-                                <rect key="frame" x="171.66666666666666" y="718" width="50" height="50"/>
+                                <rect key="frame" x="171.66666666666666" y="751" width="50" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="bAU-Cy-MxZ"/>
                                     <constraint firstAttribute="height" constant="50" id="kKH-Ce-eSb"/>
@@ -187,7 +187,7 @@
                             <constraint firstItem="amo-XZ-M2Y" firstAttribute="top" secondItem="cq9-qu-W0f" secondAttribute="top" constant="8" id="8kw-Fj-nma"/>
                             <constraint firstItem="amo-XZ-M2Y" firstAttribute="leading" secondItem="cq9-qu-W0f" secondAttribute="leading" constant="8" id="LLg-qA-S1o"/>
                             <constraint firstItem="Pch-lX-9Z1" firstAttribute="top" secondItem="d01-dv-bco" secondAttribute="top" id="TeU-jQ-fa8"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="QUL-76-gIG" secondAttribute="bottom" constant="50" id="eoc-sn-tnl"/>
+                            <constraint firstItem="cq9-qu-W0f" firstAttribute="bottom" secondItem="QUL-76-gIG" secondAttribute="bottom" constant="17" id="VgG-ZW-dT2"/>
                             <constraint firstItem="cq9-qu-W0f" firstAttribute="trailing" secondItem="Pch-lX-9Z1" secondAttribute="trailing" id="pX7-xg-BRb"/>
                             <constraint firstAttribute="bottom" secondItem="Pch-lX-9Z1" secondAttribute="bottom" id="rnm-eQ-ql9"/>
                             <constraint firstItem="QUL-76-gIG" firstAttribute="centerX" secondItem="d01-dv-bco" secondAttribute="centerX" id="xX9-Br-Bz8"/>
@@ -218,7 +218,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MFl-FZ-aFd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-7" y="41"/>
+            <point key="canvasLocation" x="-8.3969465648854964" y="40.845070422535215"/>
         </scene>
     </scenes>
     <resources>
