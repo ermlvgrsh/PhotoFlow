@@ -22,7 +22,7 @@ final class SingleImageViewContoller: UIViewController, UIScrollViewDelegate {
     @IBAction private func didTapShareButton() {
         
         guard let image = image else { return }
-        let imageToShare = [ image ]
+        let imageToShare = [image]
         let activityViewController = UIActivityViewController(activityItems: imageToShare, applicationActivities: nil)
         self.present(activityViewController, animated: true)
     }
