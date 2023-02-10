@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 
+//MARK: Класс отвечающий за ячейки фотографий
 final class ImageListCell: UITableViewCell {
     static let reuseIdentifier = "ImageListCell"
     
