@@ -5,37 +5,39 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController {
 
-    var webViewViewIdentifier = "ShowWebView"
+    private var webViewViewIdentifier = "ShowWebView"
     private var imageView: UIImageView?
     private var button: UIButton?
-    var networkDelegate : NetworkRouting?
-    var delegate: AuthViewControllerDelegate?
+    weak var delegate: AuthViewControllerDelegate?
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == webViewViewIdentifier {
             guard
                 let webViewController = segue.destination as? WebViewViewController
             else { fatalError("Error!") }
-                webViewController.delegate = self
-            } else {
+            webViewController.delegate = self
+        } else {
            super.prepare(for: segue, sender: sender)
         }
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         createEnterView()
-        
     }
    
 }
 extension AuthViewController: WebViewViewControllerDelegate {
-    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        delegate?.authViewController(self, didAuthenticateWithCode: code)
-   }
-    
-    func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
+
+ func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         dismiss(animated: true)
     }
+    
+    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+        delegate?.authViewController(self, didAuthenticateWithCode: code)
+        
+   }
+    
+
     private func createLogo() {
         let logo = UIImage(named: "unsplashLogo")
         let imageView = UIImageView(image: logo)

@@ -9,12 +9,6 @@ protocol WebViewViewControllerDelegate: AnyObject {
 }
 
 //создаем класс, который отображает страницу логина
-private struct WebConstants {
-    //создаем переменную, которую передадим в качестве ссылки для перехода на адрес авторизации
-    let unsplashAuthorizeString = "https://unsplash.com/oauth/authorize"
-    static let code = "code"
-}
-
 final class WebViewViewController: UIViewController {
     
 //MARK: Свойства экрана WebView
@@ -23,14 +17,15 @@ final class WebViewViewController: UIViewController {
     var webView : WKWebView?                                    //переменная отображающая класс WKWebView
     var backButton: UIButton?                                       //переменная кнопка назад
     var progress: UIProgressView?
-    var networkDelegate : NetworkRouting?
+    var service = OAuth2Service.shared
+ 
 
 //MARK: Lifecycle WebViewViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
         createWebView()
-       
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         guard let webView = webView else { return }
@@ -73,7 +68,6 @@ final class WebViewViewController: UIViewController {
     private func createWebView() {                              //метод отображающий нашу страницу авторизации
         
         let webView = WKWebView()                               //создаем экземпляр класс ВебВью
-        webView.navigationDelegate = self         //делаем WebViewViewController навигационным делегатом для вэбвью
         self.webView = webView                    // присваиваем экземпляр класса к экземпляру метода
         view.addSubview(webView)                  //добавляем на вью наш вэбвью
         
@@ -82,7 +76,7 @@ final class WebViewViewController: UIViewController {
         webView.frame = view.bounds
         
         let someData = SomeData()                             // создаем эземпляр структуры для использования данных
-        let urlComponents = URLComponents(string: WebConstants().unsplashAuthorizeString) //инициализируем структуру, указываем адрес
+        let urlComponents = URLComponents(string: SomeData().unsplashAuthorizeString) //инициализируем структуру, указываем адрес
         guard var urlComponents = urlComponents else { return }   //разворачиваем ее, для дальнейшего использования
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: someData.accessKey), //устанаваливаем значение - код доступа
@@ -95,7 +89,7 @@ final class WebViewViewController: UIViewController {
         createButton()
         createProgressView()
         webView.load(request)
-      
+        webView.navigationDelegate = self         //делаем WebViewViewController навигационным делегатом для вэбвью
     }
     
     private func createButton()  {                                                   //создаем кнопку
@@ -108,12 +102,14 @@ final class WebViewViewController: UIViewController {
         
         button.setImage(imageButton, for: .normal)                          //устанавливаем картинку для кнопки
         button.addTarget(self, action: #selector(buttonBackTapped), for: .touchUpInside)
-        button.backgroundColor = UIColor.white
+        button.setBackgroundImage(UIImage(), for: .normal)
         button.tintColor = UIColor.black
         
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)
         
+        button.heightAnchor.constraint(equalToConstant: 16).isActive = true
+        button.widthAnchor.constraint(equalToConstant: 9).isActive = true
         button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
         button.topAnchor.constraint(equalTo: view.topAnchor, constant: 59).isActive = true
         button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -350).isActive = true
@@ -121,14 +117,15 @@ final class WebViewViewController: UIViewController {
         
     }
     @objc func buttonBackTapped() {             //метод при нажатии кнопки назад
-        delegate?.webViewViewControllerDidCancel(self)                      //метод делегата отмены вебвью
-        dismiss(animated: true)
+        delegate?.webViewViewControllerDidCancel(self)
+    
     }
+    
     private func updateProgress() {
         guard let progress = progress else { return }
         guard let webView = webView else { return }
         progress.progress = Float(webView.estimatedProgress)
-        progress.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+        progress.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.00001
      }
     
     
@@ -150,15 +147,22 @@ final class WebViewViewController: UIViewController {
 
 
 extension WebViewViewController: WKNavigationDelegate {                     // расширение для  вебвью при успеш. автор.
-    func webView(                                       //метод пользователь  выполняет какие-то навигационые действия
+
+ func webView(                                       //метод пользователь  выполняет какие-то навигационые действия
         _ webView: WKWebView,                                       // первый параметр - сам вэбвью
         decidePolicyFor navigationAction: WKNavigationAction, // второй - объект содержащий инф. о причине навиг. действ.
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void   //третий замыкание хэндлер, принимающий 1 из 3 знач
     ) {
 
         if let code = code(from: navigationAction) { //вызываем метод code возвращающая код авторизации если он получен
+            service.fetchOAuthToken(code) { result in
+                switch result {
+                case .success(_): self.delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+                case .failure(let error): print("error \(error.localizedDescription)")
+                
+                }
+            }
 
-            delegate?.webViewViewController(self, didAuthenticateWithCode: code)//выполняем метод при получении кода
             decisionHandler(.cancel)            //отменяем навигационное действие
         } else {
             decisionHandler(.allow)             // возможный переход на новую страницу при авторизации
