@@ -2,10 +2,10 @@ import UIKit
 
 class ImageListViewController: UIViewController {
     
-    //MARK: IBOutlets
+//MARK: IBOutlets
     @IBOutlet private var tableView: UITableView!
     
-    //MARK: Variables
+//MARK: Variables
     //массив хранящий в себе фото
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     //Форматтер для оформления даты
@@ -17,7 +17,7 @@ class ImageListViewController: UIViewController {
     }()
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
-    //MARK: Functions
+//MARK: Functions
     
     func configCell(for cell: ImageListCell, with indexPath: IndexPath) {
         //проверяем возможно ли создать картинку с названием из массива, если нет - выходим из функции
@@ -60,6 +60,7 @@ class ImageListViewController: UIViewController {
     
     
 }
+//MARK: Extensions
 // создал расширение нашего класса для использования протокола UITableViewDelegate
 extension ImageListViewController: UITableViewDelegate {
 //метод отвечает за действия, которые будут выполнены при тапе по ячейке таблицы
@@ -83,9 +84,7 @@ extension ImageListViewController: UITableViewDelegate {
 extension UIImage {
     //метод который высчитывает соотношение сторон картинки
     func getCropRatio() -> CGFloat {
-        
         let widthRatio = CGFloat(self.size.width/self.size.height) 
-        
         return widthRatio
     }
 }
@@ -95,7 +94,7 @@ extension ImageListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return photosName.count
     }
-//метод создания ячейки, наполнением ее данными и передачи в таблицу
+    //метод создания ячейки, наполнением ее данными и передачи в таблицу
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImageListCell.reuseIdentifier, for: indexPath)
         guard let imageListCell = cell as? ImageListCell else {
@@ -105,7 +104,5 @@ extension ImageListViewController: UITableViewDataSource {
         configCell(for: imageListCell, with: indexPath)
         return imageListCell
     }
-    
-
     
 }

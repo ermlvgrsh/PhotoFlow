@@ -2,13 +2,19 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     
-    
+//MARK: Свойства профильного экрана
     var profilePictureView: UIImageView?
     var fullName: UILabel?
     var nickName: UILabel?
     var profileDescription: UILabel?
     var exitButton: UIButton?
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        makeProfilePage()
+    }
+    
+//MARK: Функции по созданию профильного экрана
     private func createProfilePicture() {
         
         let profilePicture = UIImage(named: "profilePhoto")
@@ -22,11 +28,10 @@ class ProfileViewController: UIViewController {
             profilePictureView.heightAnchor.constraint(equalToConstant: 70),
             profilePictureView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             profilePictureView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            
-            
         ])
         
     }
+    
     private func createProfileDescription() {
         
         guard let profilePictureView = profilePictureView  else { return }
@@ -94,19 +99,6 @@ class ProfileViewController: UIViewController {
     }
     
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        makeProfilePage()
-    }
-    
-    //MARK: Profile Outlets
 
-   
-    
-    //MARK: Profile Action
-
-    
-    
-    
     
 }
