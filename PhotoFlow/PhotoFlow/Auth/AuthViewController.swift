@@ -9,32 +9,21 @@ final class AuthViewController: UIViewController {
     private var imageView: UIImageView?
     private var button: UIButton?
     weak var delegate: AuthViewControllerDelegate?
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == webViewViewIdentifier {
-            guard
-                let webViewController = segue.destination as? WebViewViewController
-            else { fatalError("Error!") }
-            webViewController.delegate = self
-        } else {
-           super.prepare(for: segue, sender: sender)
-        }
-    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         createEnterView()
-    }
-   
+       }
+    
 }
 extension AuthViewController: WebViewViewControllerDelegate {
 
  func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-        dismiss(animated: true)
+     dismiss(animated: true)
     }
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        delegate?.authViewController(self, didAuthenticateWithCode: code)
-        
+    delegate?.authViewController(self, didAuthenticateWithCode: code)
    }
     
 
@@ -93,18 +82,22 @@ extension AuthViewController: WebViewViewControllerDelegate {
     }
     
     @objc func enterButtonPressed() {
-        let webView = WebViewViewController()
-        webView.modalPresentationStyle = .fullScreen
-        self.present(webView, animated: true)
-   
-    }
+        didLoadWebView()
+        
+   }
     
     private func createEnterView() {
         createLogo()
         createButton()
     }
     
-    
+
+    func didLoadWebView() {
+        let webView = WebViewViewController()
+        webView.delegate = self
+        webView.modalPresentationStyle = .fullScreen
+        self.present(webView, animated: true)
+    }
 }
 
 

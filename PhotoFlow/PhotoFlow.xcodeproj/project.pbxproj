@@ -148,9 +148,9 @@
 		37A23583297FC91600EEBE84 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+				37A23586297FC96100EEBE84 /* AuthViewController.swift */,
 				37A23584297FC93700EEBE84 /* WebViewViewController.swift */,
 				3798A161299A1BFE00F83BBC /* SplashViewController.swift */,
-				37A23586297FC96100EEBE84 /* AuthViewController.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";

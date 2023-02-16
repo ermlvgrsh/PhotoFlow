@@ -25,8 +25,8 @@ final class WebViewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         createWebView()
-        
-    }
+   }
+    
     override func viewWillAppear(_ animated: Bool) {
         guard let webView = webView else { return }
         webView.addObserver(self,
@@ -116,16 +116,16 @@ final class WebViewViewController: UIViewController {
         button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -737).isActive = true
         
     }
-    @objc func buttonBackTapped() {             //метод при нажатии кнопки назад
+    @objc func buttonBackTapped(_ sender: UIButton) {             //метод при нажатии кнопки назад
+       
         delegate?.webViewViewControllerDidCancel(self)
-    
     }
     
     private func updateProgress() {
         guard let progress = progress else { return }
         guard let webView = webView else { return }
         progress.progress = Float(webView.estimatedProgress)
-        progress.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.00001
+        progress.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
      }
     
     
@@ -139,8 +139,6 @@ final class WebViewViewController: UIViewController {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
-    
-    
 }
 
 //MARK: Extension WebViewViewController
@@ -157,8 +155,10 @@ extension WebViewViewController: WKNavigationDelegate {                     // �
         if let code = code(from: navigationAction) { //вызываем метод code возвращающая код авторизации если он получен
             service.fetchOAuthToken(code) { result in
                 switch result {
-                case .success(_): self.delegate?.webViewViewController(self, didAuthenticateWithCode: code)
-                case .failure(let error): print("error \(error.localizedDescription)")
+                case .success(_):
+                    self.delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+                case .failure(let error): 
+                    print("error \(error.localizedDescription)")
                 
                 }
             }
