@@ -4,46 +4,35 @@ protocol AuthViewControllerDelegate: AnyObject {
 }
 
 final class AuthViewController: UIViewController {
-
+    
     private var webViewViewIdentifier = "ShowWebView"
     private var imageView: UIImageView?
     private var button: UIButton?
     weak var delegate: AuthViewControllerDelegate?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         createEnterView()
-       }
-    
-}
-extension AuthViewController: WebViewViewControllerDelegate {
-
- func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
-     dismiss(animated: true)
     }
     
-    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-    delegate?.authViewController(self, didAuthenticateWithCode: code)
-   }
-    
-
     private func createLogo() {
         let logo = UIImage(named: "unsplashLogo")
         let imageView = UIImageView(image: logo)
-       
+        
         self.imageView = imageView
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         
         view.addSubview(imageView)
-        imageView.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
+        NSLayoutConstraint.activate([
+            imageView.heightAnchor.constraint(equalToConstant: 60),
+            imageView.widthAnchor.constraint(equalToConstant: 60),
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
-    
     private func createButton() {
         
         let button = UIButton(type: .system)
@@ -65,7 +54,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
         let titleAttribute: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: 17) ]
         
-
+        
         let titleAttributedString = NSAttributedString(string: "Войти", attributes: titleAttribute)
         button.setAttributedTitle(titleAttributedString, for: .normal)
         button.addTarget(self, action: #selector(enterButtonPressed), for: .touchUpInside)
@@ -80,18 +69,15 @@ extension AuthViewController: WebViewViewControllerDelegate {
             button.widthAnchor.constraint(equalToConstant: 343)])
         
     }
-    
-    @objc func enterButtonPressed() {
+    @objc private func enterButtonPressed() {
         didLoadWebView()
         
-   }
-    
+    }
     private func createEnterView() {
         createLogo()
         createButton()
     }
     
-
     func didLoadWebView() {
         let webView = WebViewViewController()
         webView.delegate = self
@@ -100,4 +86,13 @@ extension AuthViewController: WebViewViewControllerDelegate {
     }
 }
 
-
+extension AuthViewController: WebViewViewControllerDelegate {
+    
+    func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
+        dismiss(animated: true)
+    }
+    
+    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+        delegate?.authViewController(self, didAuthenticateWithCode: code)
+    }
+}

@@ -1,6 +1,6 @@
 import Foundation
 //MARK: переменные хранящие в себе данные на доступ при авторизации
-struct SomeData {
+struct Constants {
     let accessKey = "ENuMv6Q_pxhXCtpyxN2mYbKJaWrlfl25vCRVefARyNo"
     let secretKey = "LtdQrrc4tqQZVr00ljNC0SsZZq61BrXQvnaZEh6ijeA"
     let redirectUri = "urn:ietf:wg:oauth:2.0:oob"

@@ -17,8 +17,6 @@ final class SingleImageViewContoller: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var scrollView: UIScrollView!
     
     
-    
-    
     @IBAction private func didTapShareButton() {
         
         guard let image = image else { return }
@@ -64,15 +62,10 @@ final class SingleImageViewContoller: UIViewController, UIScrollViewDelegate {
     }
     
     
-        func scrollViewDidZoom(_ scrollView: UIScrollView) {
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
         view.layoutIfNeeded()
         let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) * 0.5, 0)
         let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) * 0.5, 0)
         scrollView.contentInset = UIEdgeInsets(top: offsetY, left: offsetX, bottom: 0, right: 0)
     }
-    
-    
 }
-
-
-

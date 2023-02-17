@@ -1,11 +1,11 @@
 import UIKit
 
-class ImageListViewController: UIViewController {
+final class ImageListViewController: UIViewController {
     
-//MARK: IBOutlets
+    //MARK: IBOutlets
     @IBOutlet private var tableView: UITableView!
     
-//MARK: Variables
+    //MARK: Variables
     //массив хранящий в себе фото
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
     //Форматтер для оформления даты
@@ -17,7 +17,7 @@ class ImageListViewController: UIViewController {
     }()
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
     
-//MARK: Functions
+    //MARK: Functions
     
     func configCell(for cell: ImageListCell, with indexPath: IndexPath) {
         //проверяем возможно ли создать картинку с названием из массива, если нет - выходим из функции
@@ -36,18 +36,18 @@ class ImageListViewController: UIViewController {
     }
     // метод открытия нужной картинки в потоке через сегвей
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        //проверяем идентификатор сегвея, поскольку может быть больше одного
+        //проверяем идентификатор сегвея, поскольку может быть больше одного
         if segue.identifier == showSingleImageSegueIdentifier {
-//делаем преобразования типа для свойства .destination в ожидаемое для нас SingleImageViewContoller
+            //делаем преобразования типа для свойства .destination в ожидаемое для нас SingleImageViewContoller
             let viewController = segue.destination as! SingleImageViewContoller
-//делаем преобразования типа для sender, если там будет что то другое - мы не сможем сконфигурировать переход
+            //делаем преобразования типа для sender, если там будет что то другое - мы не сможем сконфигурировать переход
             let indexPath = sender as! IndexPath
-//получаем индекс картинки и саму картинку из ресурсов
+            //получаем индекс картинки и саму картинку из ресурсов
             let image = UIImage(named: photosName[indexPath.row])
-//передаем картинку внутри SingleImageViewContoller
+            //передаем картинку внутри SingleImageViewContoller
             viewController.image = image
         } else {
-// если неизвестный сегвей - передаем управление ему
+            // если неизвестный сегвей - передаем управление ему
             super.prepare(for: segue, sender: sender)
         }
     }
@@ -63,19 +63,19 @@ class ImageListViewController: UIViewController {
 //MARK: Extensions
 // создал расширение нашего класса для использования протокола UITableViewDelegate
 extension ImageListViewController: UITableViewDelegate {
-//метод отвечает за действия, которые будут выполнены при тапе по ячейке таблицы
-//адрес ячейки который хранится в indexPath передается в качестве аргумента
+    //метод отвечает за действия, которые будут выполнены при тапе по ячейке таблицы
+    //адрес ячейки который хранится в indexPath передается в качестве аргумента
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//выполняем переход сегвей из общего потока в конкретное фото
-// 1 аргумент - идентификатор, который мы задали в storyboard; 2 используется в override func prepare
+        //выполняем переход сегвей из общего потока в конкретное фото
+        // 1 аргумент - идентификатор, который мы задали в storyboard; 2 используется в override func prepare
         performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
     }
-//метод который отвечает за высоту ячейки
+    //метод который отвечает за высоту ячейки
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         guard let image = UIImage(named: photosName[indexPath.row]) else {
             return 0
         }
-//добавляю через переменную метод высчитывания соотношения сторон
+        //добавляю через переменную метод высчитывания соотношения сторон
         let imageCrop = image.getCropRatio()
         return tableView.frame.width / imageCrop
     }
@@ -84,7 +84,7 @@ extension ImageListViewController: UITableViewDelegate {
 extension UIImage {
     //метод который высчитывает соотношение сторон картинки
     func getCropRatio() -> CGFloat {
-        let widthRatio = CGFloat(self.size.width/self.size.height) 
+        let widthRatio = CGFloat(self.size.width/self.size.height)
         return widthRatio
     }
 }

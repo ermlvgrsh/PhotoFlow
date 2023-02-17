@@ -1,20 +1,20 @@
 import UIKit
 
-class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController {
     
 //MARK: Свойства профильного экрана
-    var profilePictureView: UIImageView?
-    var fullName: UILabel?
-    var nickName: UILabel?
-    var profileDescription: UILabel?
-    var exitButton: UIButton?
+    private var profilePictureView: UIImageView?
+    private var fullName: UILabel?
+    private var nickName: UILabel?
+    private var profileDescription: UILabel?
+    private var exitButton: UIButton?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         makeProfilePage()
     }
     
-//MARK: Функции по созданию профильного экрана
+    //MARK: Функции по созданию профильного экрана
     private func createProfilePicture() {
         
         let profilePicture = UIImage(named: "profilePhoto")
@@ -40,7 +40,7 @@ class ProfileViewController: UIViewController {
         self.fullName = fullName
         fullName.font = .systemFont(ofSize: 23, weight: .bold)
         fullName.text = "Екатерина Новикова"
-       
+        
         fullName.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         fullName.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(fullName)
@@ -70,11 +70,12 @@ class ProfileViewController: UIViewController {
             
             profileDescription.leadingAnchor.constraint(equalTo: fullName.leadingAnchor),
             profileDescription.topAnchor.constraint(equalTo: nickName.bottomAnchor, constant: 8)
-            ])
+        ])
     }
+    
     private func createExitButton() {
         
-       createProfilePicture()
+        createProfilePicture()
         guard let profilePictureView = profilePictureView else { return }
         guard let exitButtonImage = UIImage(named: "ipad.and.arrow.forward") else { return }
         let exitButton = UIButton.systemButton(with: exitButtonImage,
@@ -97,8 +98,4 @@ class ProfileViewController: UIViewController {
         createExitButton()
         createProfileDescription()
     }
-    
-    
-
-    
 }
