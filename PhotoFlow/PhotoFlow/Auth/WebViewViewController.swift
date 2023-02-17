@@ -117,7 +117,6 @@ final class WebViewViewController: UIViewController {
         
     }
     @objc func buttonBackTapped(_ sender: UIButton) {             //метод при нажатии кнопки назад
-        
         delegate?.webViewViewControllerDidCancel(self)
     }
     
@@ -151,7 +150,6 @@ extension WebViewViewController: WKNavigationDelegate {                     // �
         decidePolicyFor navigationAction: WKNavigationAction, // второй - объект содержащий инф. о причине навиг. действ.
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void   //третий замыкание хэндлер, принимающий 1 из 3 знач
     ) {
-        
         if let code = code(from: navigationAction) { //вызываем метод code возвращающая код авторизации если он получен
             service.fetchOAuthToken(code) { result in
                 switch result {
@@ -159,16 +157,15 @@ extension WebViewViewController: WKNavigationDelegate {                     // �
                     self.delegate?.webViewViewController(self, didAuthenticateWithCode: code)
                 case .failure(let error):
                     print("error \(error.localizedDescription)")
-                    
-                }
+               }
             }
-            
-            decisionHandler(.cancel)            //отменяем навигационное действие
+           decisionHandler(.cancel)            //отменяем навигационное действие
         } else {
             decisionHandler(.allow)             // возможный переход на новую страницу при авторизации
         }
     }
 }
+
 private func code(from navigationAction: WKNavigationAction) -> String? { //метод возвращения кода авторизации
     if
         let url = navigationAction.request.url,         //получаем из навигационного действия URL

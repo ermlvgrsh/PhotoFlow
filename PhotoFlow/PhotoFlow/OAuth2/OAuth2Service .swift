@@ -49,7 +49,6 @@ final class OAuth2Service {
     
 }
 
-
 extension URLSession {
     func data(
         for request: URLRequest,
@@ -60,23 +59,21 @@ extension URLSession {
                 completion(result)
             }
         }
+        
         let task = dataTask(with: request, completionHandler:  { data, response, error in
-            if let data = data,
-               let response = response,
-               let statusCode = (response as? HTTPURLResponse)?.statusCode
-            {
-                if 200..<300 ~= statusCode {
-                    fulfillCompletion((.success(data)))
-                } else {
-                    return fulfillCompletion(.failure(NetworkError.httpStatusCode(statusCode)))
-                }
-            } else if let error = error {
-                fulfillCompletion(.failure(NetworkError.urlRequestError(error)))
-            } else {
-                fulfillCompletion(.failure(NetworkError.urlSessionError))
-                
-                
-            }
+            
+            guard let error = error else { return
+                fulfillCompletion(.failure(NetworkError.urlSessionError))}
+            fulfillCompletion(.failure(NetworkError.urlRequestError(error)))
+            
+            guard let data = data,
+                  let response = response,
+                  let statusCode = (response as? HTTPURLResponse)?.statusCode
+            else { return }
+            
+            guard 200..<300 ~= statusCode else { return fulfillCompletion(.failure(NetworkError.httpStatusCode(statusCode)))}
+            return fulfillCompletion(.success(data))
+            
             
         })
         task.resume()
