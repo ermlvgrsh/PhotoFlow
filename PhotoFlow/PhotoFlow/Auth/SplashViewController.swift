@@ -2,9 +2,9 @@ import UIKit
 
 
 final class SplashViewController: UIViewController {
- 
-    let showAuthenticationScreenSegueIdentifier = "ScreenSegueIdentifier"
-    let oAuthService = OAuth2Service()
+    
+    private let showAuthenticationScreenSegueIdentifier = "ScreenSegueIdentifier"
+    private let oAuthService = OAuth2Service.shared
     
     
     
@@ -39,9 +39,10 @@ final class SplashViewController: UIViewController {
         
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
-        
-        imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        NSLayoutConstraint.activate([
+            imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
     }
 }
 
@@ -49,6 +50,18 @@ final class SplashViewController: UIViewController {
 
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
-        switchTabBarController()
+        self.fetchOAuthToken(code)
+    }
+    
+    private func fetchOAuthToken(_ code: String) {
+        oAuthService.fetchOAuthToken(code) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.switchTabBarController()
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
     }
 }

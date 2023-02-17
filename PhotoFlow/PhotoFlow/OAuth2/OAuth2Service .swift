@@ -8,7 +8,7 @@ enum NetworkError: Error {
     
 }
 
-private let defaultBaseURL = SomeData().defaultBaseURL
+private let defaultBaseURL = Constants().defaultBaseURL
 
 //реализуем класс, который взаимодействует с авторизацией на сервисе ансплэш
 final class OAuth2Service {
@@ -16,9 +16,10 @@ final class OAuth2Service {
     
     //доступ к единственному экземпляру класса (синглтон)
     static let shared = OAuth2Service()
+    private init() {}
+    
     private let urlSession = URLSession.shared
     //доступ к последнему полученному токену
-   
     private (set) var authToken : String? {
         get {
             return OAuth2TokenStorage().token
@@ -38,7 +39,6 @@ final class OAuth2Service {
             case.success(let body):
                 let authToken = body.accessToken
                 self.authToken = authToken
-                SplashViewController().switchTabBarController()
                 completion(.success(authToken))
             case .failure(let error):
                 completion(.failure(error))
@@ -46,8 +46,6 @@ final class OAuth2Service {
         }
         task.resume()
     }
-    
-    
     
 }
 
@@ -79,7 +77,7 @@ extension URLSession {
                 
                 
             }
-          
+            
         })
         task.resume()
         return task
@@ -107,9 +105,9 @@ extension OAuth2Service {
         
         let urlString = "https://unsplash.com/oauth/token"
         var urlComponents = URLComponents(string: urlString)
-        urlComponents?.queryItems = [URLQueryItem(name: "client_id", value: SomeData().accessKey),
-                                     URLQueryItem(name: "client_secret", value: SomeData().secretKey),
-                                     URLQueryItem(name: "redirect_uri", value: SomeData().redirectUri),
+        urlComponents?.queryItems = [URLQueryItem(name: "client_id", value: Constants().accessKey),
+                                     URLQueryItem(name: "client_secret", value: Constants().secretKey),
+                                     URLQueryItem(name: "redirect_uri", value: Constants().redirectUri),
                                      URLQueryItem(name: "code", value: code),
                                      URLQueryItem(name: "grant_type", value: "authorization_code"),
         ]
@@ -121,7 +119,7 @@ extension OAuth2Service {
     
 }
 
-    func bindSome<T>(for thing: T?) -> T {
+func bindSome<T>(for thing: T?) -> T {
     guard let some = thing else { preconditionFailure("Unable to bind")}
     return some
 }

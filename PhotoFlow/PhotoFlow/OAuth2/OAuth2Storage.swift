@@ -1,6 +1,6 @@
 import Foundation
 //создаем класс для хранения токена, который получаем при авторизации
-class OAuth2TokenStorage {
+final class OAuth2TokenStorage {
     
     private enum Keys: String {
         case token
