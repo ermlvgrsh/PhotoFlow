@@ -6,21 +6,20 @@ final class SplashViewController: UIViewController {
     private let showAuthenticationScreenSegueIdentifier = "ScreenSegueIdentifier"
     private let oAuthService = OAuth2Service.shared
     
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
+ }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         //проверяем есть уже токен-авторизации
         if let token = oAuthService.authToken {
-            switchTabBarController()
         } else {
             performSegue(withIdentifier: showAuthenticationScreenSegueIdentifier, sender: nil)
         }
     }
+
     
     func switchTabBarController() {
         //получаем экзмепляр 'window' приложения
@@ -46,26 +45,19 @@ final class SplashViewController: UIViewController {
     }
 }
 
-
-
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
-        dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
-            self.fetchOAuthToken(code)
-        }
-        
-    }
-    
-    private func fetchOAuthToken(_ code: String) {
-        oAuthService.fetchOAuthToken(code) { [weak self] result in
+        oAuthService.fetchOAuthToken(code) {[weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success:
+            case.success:
                 self.switchTabBarController()
             case .failure(let error):
                 print(error.localizedDescription)
             }
+            
         }
     }
+    
 }
+    
