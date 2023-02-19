@@ -60,8 +60,7 @@ extension URLSession {
             }
         }
         
-        let task = dataTask(with: request, completionHandler:  { data, response, error in
-            
+        let task = dataTask(with: request, completionHandler: { data, response, error in
             guard let error = error else {
                 
                 guard let response = response,
@@ -73,6 +72,7 @@ extension URLSession {
                 return fulfillCompletion(.success(data))
             }
             return fulfillCompletion(.failure(NetworkError.urlRequestError(error)))
+            
         })
         task.resume()
         return task
