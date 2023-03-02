@@ -18,28 +18,19 @@ final class WebViewViewController: UIViewController {
     private var backButton: UIButton?                                       //переменная кнопка назад
     private var progress: UIProgressView?
     private var service = OAuth2Service.shared
-    
-
+    private var estimatedProgressObservation: NSKeyValueObservation?
     //MARK: Lifecycle WebViewViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
         createWebView()
+        estimatedProgressObservation = webView?.observe(\.estimatedProgress,options: [],changeHandler: { [weak self] _, _  in
+            guard let self = self else { return }
+            self.updateProgress()
+        })
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        guard let webView = webView else { return }
-        webView.addObserver(self,
-                            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-                            options: .new,
-                            context: nil)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        guard let webView = webView else { return }
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
-    }
+
     
     //MARK: Функции для создания UIElements
     
@@ -127,17 +118,7 @@ final class WebViewViewController: UIViewController {
         progress.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
     
-    
-    override func observeValue(forKeyPath keyPath: String?,
-                               of object: Any?,
-                               change: [NSKeyValueChangeKey : Any]?,
-                               context: UnsafeMutableRawPointer?) {
-        if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
-    }
+
 }
 
 //MARK: Extension WebViewViewController
