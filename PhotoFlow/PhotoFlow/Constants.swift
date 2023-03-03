@@ -8,5 +8,7 @@ struct Constants {
     let defaultBaseURL = URL(string: "https://api.unsplash.com")
     let unsplashAuthorizeString = "https://unsplash.com/oauth/authorize"
     let code = "code"
+    let stringMe = "https://api.unsplash.com/me"
+    let stringUser = "https://api.unsplash.com/users/"
 }
 

@@ -19,6 +19,8 @@ final class OAuth2Service {
     private init() {}
     
     private let urlSession = URLSession.shared
+    private var task: URLSessionTask?
+    private var lastCode: String?
     //доступ к последнему полученному токену
     private (set) var authToken : String? {
         get {
@@ -31,7 +33,10 @@ final class OAuth2Service {
     //метод в который передается код из ВебВью и через замыкание и другие функции возвращает полученный токен
     func fetchOAuthToken(_ code: String,
                          completion: @escaping (Result<String, Error>) -> Void) {
-        
+        assert(Thread.isMainThread)
+        if lastCode == code { return }
+        task?.cancel()
+        lastCode = code
         let request = authTokenRequest(code: code)
         let task = object(for: request) { [weak self] result in
             guard let self = self else { return }
@@ -48,54 +53,42 @@ final class OAuth2Service {
     }
     
 }
-
 extension URLSession {
-    func data(
+    func objectTask<T: Decodable>(
         for request: URLRequest,
-        completion: @escaping (Result <Data, Error>) -> Void)
-    -> URLSessionTask {
-        let fulfillCompletion: (Result <Data, Error>) -> Void = { result in
-            DispatchQueue.main.async {
-                completion(result)
-            }
-        }
-        
+        completion: @escaping(Result<T, Error>) -> Void
+    ) -> URLSessionTask {
         let task = dataTask(with: request, completionHandler: { data, response, error in
-            guard let error = error else {
-                
-                guard let response = response,
-                      let data = data,
-                      let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-                    return fulfillCompletion(.failure(NetworkError.urlSessionError))}
-                
-                guard 200..<300 ~= statusCode else { return fulfillCompletion(.failure(NetworkError.httpStatusCode(statusCode)))}
-                return fulfillCompletion(.success(data))
+            DispatchQueue.main.async {
+                guard let error = error else {
+                    guard let response = response,
+                          let data = data,
+                          let statusCode = (response as? HTTPURLResponse)?.statusCode else {
+                        return completion(.failure(NetworkError.urlSessionError))}
+                    
+                    guard 200..<300 ~= statusCode else { return completion(.failure(NetworkError.httpStatusCode(statusCode)))}
+                    let json = try? JSONDecoder().decode(T.self, from: data)
+                    
+                    return completion(.success(bindSome(for: json)))
+                }
+                return completion(.failure(NetworkError.urlRequestError(error)))
             }
-            return fulfillCompletion(.failure(NetworkError.urlRequestError(error)))
+         })
             
-        })
-        task.resume()
         return task
     }
 }
 
-
 extension OAuth2Service {
     private func object(
-        for request: URLRequest?,
+        for request: URLRequest,
         completion: @escaping (Result<OAuthTokenResponseBody, Error>) -> Void
     ) -> URLSessionTask {
-        let decoder = JSONDecoder()
-        return urlSession.data(for: bindSome(for: request)) { (result: Result<Data, Error>) in
-            let response = result.flatMap { data -> Result<OAuthTokenResponseBody, Error> in
-                Result {
-                    try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                }
-            }
-            completion(response)
+        return urlSession.objectTask(for: request) { result in
+            completion(result)
         }
-        
     }
+    
     private func authTokenRequest(code: String) -> URLRequest {
         
         let urlString = "https://unsplash.com/oauth/token"
