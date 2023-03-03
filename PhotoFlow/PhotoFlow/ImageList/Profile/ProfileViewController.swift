@@ -10,7 +10,7 @@ final class ProfileViewController: UIViewController {
     private var exitButton: UIButton?
     private let profileService = ProfileService.shared
     private let token = OAuth2TokenStorage().token
-    private let profileImageService = ProfileImageService()
+    private let profileImageService = ProfileImageService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
     
 
@@ -20,7 +20,7 @@ final class ProfileViewController: UIViewController {
         makeProfilePage()
         guard let profile = profileService.profile else { return }
         updateProfileDetails(profile: profile)
-        profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.DidChangeNotification, object: nil, queue: .main) { [weak self] _ in
+        profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
             guard let self = self else { return }
             self.updateAvatar()
         }
@@ -126,9 +126,8 @@ extension ProfileViewController {
      func updateAvatar() {
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else { return }
-         guard let profilePictureView = profilePictureView else { return }
+            let url = URL(string: profileImageURL),
+            let profilePictureView = profilePictureView else { return }
          let processor = RoundCornerImageProcessor(cornerRadius: 20)
          profilePictureView.kf.setImage(with: url, options: [.processor(processor)])
      }

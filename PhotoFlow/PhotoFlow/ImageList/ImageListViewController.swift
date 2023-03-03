@@ -95,7 +95,9 @@ extension ImageListViewController: UITableViewDataSource {
         return photosName.count
     }
     //метод создания ячейки, наполнением ее данными и передачи в таблицу
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView,
+                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        //TODO: Вызвать метод fetchPhotosNextPage
         let cell = tableView.dequeueReusableCell(withIdentifier: ImageListCell.reuseIdentifier, for: indexPath)
         guard let imageListCell = cell as? ImageListCell else {
             return UITableViewCell()
