@@ -4,47 +4,73 @@ final class ImageListService {
     
     private (set) var photos: [Photo] = []
     private var lastLoadedPage: Int?
+    
     static let didChangeNotification = Notification.Name(rawValue: "ImageListServiceDidChange")
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
+    private var token = OAuth2Service.shared.authToken
+    static let shared = ImageListService()
+    
     
     func fetchPhotosNextPage() {
         assert(Thread.isMainThread)
-        let nextPage = lastLoadedPage == nil ? 1 : bindSome(for: lastLoadedPage) + 1
+        let nextPage = lastLoadedPage == nil ? 1 : lastLoadedPage! + 1
         
-        let url = URL(string: Constants().stringPhotos)
-        var request = URLRequest(url: bindSome(for: url))
+        guard let token = token,
+              task == nil else { return }
+    
+        guard var request = makePhotoRequest(page: nextPage, perPage: 10) else { return }
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-      task = urlSession.objectTask(for: request) { (result: Result<PhotoResult, Error>) in
+        let task = urlSession.objectTask(for: request) {(result: Result<[PhotoResult], Error>) in
             switch result {
-            case.success(let json):
-                let photoResult = PhotoResult(id: json.id,
-                                              width: json.width,
-                                              height: json.height,
-                                              createdAt: json.createdAt,
-                                              description: json.description,
-                                              thumbImageURL: json.thumbImageURL,
-                                              largeImageURL: json.largeImageURL,
-                                              isLiked: json.isLiked)
-                guard let thumb = photoResult.thumbImageURL.urls["thumb"] else { return }
-                guard let large = photoResult.largeImageURL.urls["full"] else { return }
-                let size = CGRect(x: 0, y: 0, width: photoResult.width, height: photoResult.height)
-                let photo = Photo(id: photoResult.id,
-                                  size: size,
-                                  createdAt: photoResult.createdAt,
-                                  welcomeDescription: photoResult.description,
-                                  thumbImageURL: thumb,
-                                  largeImageURL: large,
-                                  isLiked: photoResult.isLiked)
-                self.photos.append(photo)
-                NotificationCenter.default
-                    .post(name: ImageListService.didChangeNotification,
-                          object: self)
-            case .failure(let error): print(error.localizedDescription)
-                
+            case .success(let array):
+                DispatchQueue.main.async {
+                    var photoResult : [PhotoResult] = []
+                    photoResult += array
+                    let photo = photoResult.map { photo in
+                        Photo(id: photo.id,
+                              size: CGSize(width: photo.width, height: photo.height),
+                              createdAt: photo.createdAt,
+                              welcomeDescription: photo.description,
+                              thumbImageURL: photo.urls.thumb,
+                              largeImageURL: photo.urls.full,
+                              isLiked: photo.isLiked)
+                    }
+                    NotificationCenter.default
+                                      .post(name: ImageListService.didChangeNotification,
+                                            object: self,
+                                            userInfo: ["photo": photo])
+                    self.photos += photo
+                    self.task = nil
+                }
+            case.failure(let error): print(error)
             }
         }
-        task?.resume()
-        
+        self.task = task
+        task.resume()
     }
+    
+   private func makePhotoRequest(page: Int, perPage: Int) -> URLRequest? {
+        URLRequest.makeHTTPRequest(path: "/photos?"
+                                   + "page=\(page)"
+                                   + "&&per_page=\(perPage)",
+                                   httpMethod: "GET")
+    }
+   
+}
+
+private extension URLRequest {
+    static func makeHTTPRequest(
+        path: String,
+        httpMethod: String,
+        baseURL: URL? = Constants().defaultBaseURL
+    ) -> URLRequest? {
+        guard let baseURL = baseURL else { return nil }
+        guard let url = URL(string: path, relativeTo: baseURL) else { return nil }
+        var request = URLRequest(url: url)
+        request.httpMethod = httpMethod
+        return request
+    }
+    
 }

@@ -16,6 +16,7 @@ final class ImageListViewController: UIViewController {
         return formatter
     }()
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
+    private let imageListService = ImageListService.shared
     
     //MARK: Functions
     
@@ -98,6 +99,9 @@ extension ImageListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //TODO: Вызвать метод fetchPhotosNextPage
+//        if indexPath.row + 1 == imageListService.photos.count {
+//            imageListService.fetchPhotosNextPage()
+//        }
         let cell = tableView.dequeueReusableCell(withIdentifier: ImageListCell.reuseIdentifier, for: indexPath)
         guard let imageListCell = cell as? ImageListCell else {
             return UITableViewCell()

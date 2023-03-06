@@ -1,13 +1,12 @@
 import Foundation
 
-struct PhotoResult: Codable {
+struct PhotoResult: Decodable {
     let id: String
     let width: Int
     let height: Int
     let createdAt: Date?
     let description: String
-    let thumbImageURL: URLsResult
-    let largeImageURL: URLsResult
+    let urls: URLsResult
     let isLiked: Bool
     
     enum CodingKeys: String, CodingKey {
@@ -17,15 +16,11 @@ struct PhotoResult: Codable {
         case createdAt = "created_at"
         case description = "description"
         case isLiked = "liked_by_user"
-        case thumbImageURL = "thumb"
-        case largeImageURL = "large"
+        case urls
     }
 }
 
-struct URLsResult: Codable {
-    let urls: [String : String]
-    
-    enum CodingKeys: String, CodingKey {
-        case urls = "urls"
-    }
+struct URLsResult: Decodable {
+    let thumb: String
+    let full: String
 }
