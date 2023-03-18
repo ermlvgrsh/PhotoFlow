@@ -9,6 +9,9 @@ final class AuthViewController: UIViewController {
     private var imageView: UIImageView?
     private var button: UIButton?
     weak var delegate: AuthViewControllerDelegate?
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +45,7 @@ final class AuthViewController: UIViewController {
         button.setTitleColor(.black,
                              for: .normal)
         button.layer.cornerRadius = 16
-        
+     
         button.addTarget(self,
                          action: #selector(enterButtonPressed),
                          for: .touchUpInside)
@@ -52,7 +55,7 @@ final class AuthViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         
         let titleAttribute: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 17) ]
+            .font: UIFont.systemFont(ofSize: 17, weight: .bold)  ]
         
         
         let titleAttributedString = NSAttributedString(string: "Войти", attributes: titleAttribute)

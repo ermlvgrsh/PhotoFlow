@@ -5,7 +5,6 @@ enum NetworkError: Error {
     case httpStatusCode(Int)
     case urlRequestError(Error)
     case urlSessionError
-    
 }
 
 private let defaultBaseURL = Constants().defaultBaseURL
@@ -54,6 +53,7 @@ final class OAuth2Service {
     
 }
 extension URLSession {
+    
     func objectTask<T: Decodable>(
         for request: URLRequest,
         completion: @escaping(Result<T, Error>) -> Void
@@ -67,9 +67,10 @@ extension URLSession {
                         return completion(.failure(NetworkError.urlSessionError))}
                     
                     guard 200..<300 ~= statusCode else { return completion(.failure(NetworkError.httpStatusCode(statusCode)))}
-                    let json = try? JSONDecoder().decode(T.self, from: data)
-                    
-                    return completion(.success(bindSome(for: json)))
+                    let decoder = JSONDecoder()
+                    guard let json = try? decoder.decode(T.self, from: data) else { return }
+                    completion(.success(bindSome(for: json)))
+                    return
                 }
                 return completion(.failure(NetworkError.urlRequestError(error)))
             }
@@ -78,6 +79,8 @@ extension URLSession {
         return task
     }
 }
+
+
 
 extension OAuth2Service {
     private func object(

@@ -12,4 +12,3 @@ struct Constants {
     let stringUser = "https://api.unsplash.com/users/"
     let stringPhotos = "https://api.unsplash.com/photos"
 }
-

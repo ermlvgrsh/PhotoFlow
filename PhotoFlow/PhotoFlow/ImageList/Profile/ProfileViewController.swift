@@ -1,7 +1,9 @@
 import UIKit
 import Kingfisher
+import SwiftKeychainWrapper
+import WebKit
 final class ProfileViewController: UIViewController {
-    
+
 //MARK: Свойства профильного экрана
     private var profilePictureView: UIImageView?
     private var fullName: UILabel?
@@ -12,11 +14,14 @@ final class ProfileViewController: UIViewController {
     private let token = OAuth2TokenStorage().token
     private let profileImageService = ProfileImageService.shared
     private var profileImageServiceObserver: NSObjectProtocol?
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     
 
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+
         makeProfilePage()
         guard let profile = profileService.profile else { return }
         updateProfileDetails(profile: profile)
@@ -86,6 +91,17 @@ final class ProfileViewController: UIViewController {
             profileDescription.topAnchor.constraint(equalTo: nickName.bottomAnchor, constant: 8)
         ])
     }
+    private func cleanWebKitCache() {
+        // Очищаем все куки из хранилища.
+        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+        // Запрашиваем все данные из локального хранилища.
+        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+            // Массив полученных записей удаляем из хранилища.
+            records.forEach { record in
+                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+            }
+        }
+    }
     
     private func createExitButton() {
         
@@ -93,8 +109,7 @@ final class ProfileViewController: UIViewController {
         guard let profilePictureView = profilePictureView else { return }
         guard let exitButtonImage = UIImage(named: "ipad.and.arrow.forward") else { return }
         let exitButton = UIButton.systemButton(with: exitButtonImage,
-                                               target: self,
-                                               action: .none)
+                                               target: self, action: #selector(logout))
         self.exitButton = exitButton
         exitButton.tintColor = UIColor(red: 0.961, green: 0.42, blue: 0.424, alpha: 1)
         exitButton.translatesAutoresizingMaskIntoConstraints = false
@@ -108,11 +123,57 @@ final class ProfileViewController: UIViewController {
         ])
         
     }
+    
+    private func switchToSplashViewController() {
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Fail to switch on SplashView")
+            return
+        }
+        window.rootViewController = SplashViewController()
+        window.makeKeyAndVisible()
+    }
+    
+    private func cleanToken() {
+        KeychainWrapper.standard.removeAllKeys()
+    }
+    
+    @objc
+    private func logout() {
+        let alert = UIAlertController(title: "Пока-пока!",
+                                      message: "Уверены что хотите выйти?",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] _ in
+            self?.cleanToken()
+            self?.switchToSplashViewController()
+            self?.cleanWebKitCache()
+        }))
+        alert.addAction(UIAlertAction(title: "Нет", style: .default, handler: { _ in }))
+        present(alert, animated: true)
+
+    }
+
     private func makeProfilePage() {
         createExitButton()
         createProfileDescription()
         view.backgroundColor = UIColor(named: "black")
         
+    }
+    private func makeGradientOnAvatar() {
+        profilePictureView?.image = UIImage(named: "elipse")
+        let gradient = CAGradientLayer()
+        gradient.frame = CGRect(origin: .zero, size: CGSize(width: 70, height: 70))
+        gradient.locations = [0, 0.1, 0.3]
+        gradient.colors = [
+            UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1).cgColor,
+            UIColor(red: 0.531, green: 0.533, blue: 0.553, alpha: 1).cgColor,
+            UIColor(red: 0.431, green: 0.433, blue: 0.453, alpha: 1).cgColor
+        ]
+        gradient.startPoint = CGPoint(x: 0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1, y: 0.5)
+        gradient.cornerRadius = 35
+        gradient.masksToBounds = true
+        //animationLayers.append(gradient)
+        profilePictureView?.layer.addSublayer(gradient)
     }
 }
 extension ProfileViewController {
@@ -131,5 +192,4 @@ extension ProfileViewController {
          let processor = RoundCornerImageProcessor(cornerRadius: 20)
          profilePictureView.kf.setImage(with: url, options: [.processor(processor)])
      }
-    
 }
