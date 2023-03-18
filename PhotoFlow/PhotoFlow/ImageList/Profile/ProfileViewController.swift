@@ -111,6 +111,7 @@ final class ProfileViewController: UIViewController {
         let exitButton = UIButton.systemButton(with: exitButtonImage,
                                                target: self, action: #selector(logout))
         self.exitButton = exitButton
+        exitButton.addTarget(self, action: #selector(logout), for: .touchUpInside)
         exitButton.tintColor = UIColor(red: 0.961, green: 0.42, blue: 0.424, alpha: 1)
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(exitButton)
@@ -139,9 +140,11 @@ final class ProfileViewController: UIViewController {
     
     @objc
     private func logout() {
+        
         let alert = UIAlertController(title: "Пока-пока!",
                                       message: "Уверены что хотите выйти?",
                                       preferredStyle: .alert)
+        
         alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] _ in
             self?.cleanToken()
             self?.switchToSplashViewController()
@@ -192,4 +195,11 @@ extension ProfileViewController {
          let processor = RoundCornerImageProcessor(cornerRadius: 20)
          profilePictureView.kf.setImage(with: url, options: [.processor(processor)])
      }
+}
+extension ProfileViewController: AlertDelegate {
+    func didRecieveAlert(_ viewController: UIAlertController) {
+        present(viewController, animated: true)
+    }
+    
+    
 }

@@ -42,6 +42,7 @@
 		37FCD96A29B2005300B9DD65 /* ImageListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FCD96929B2005300B9DD65 /* ImageListService.swift */; };
 		37FCD96C29B203E500B9DD65 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FCD96B29B203E500B9DD65 /* Photo.swift */; };
 		37FCD96E29B2096700B9DD65 /* PhotoResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FCD96D29B2096700B9DD65 /* PhotoResult.swift */; };
+		37FCD98329B247E700B9DD65 /* ImageListServiceTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37FCD98229B247E700B9DD65 /* ImageListServiceTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,13 @@
 			remoteInfo = PhotoFlow;
 		};
 		37AE1BB72950515F008DA038 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37AE1B8E2950515D008DA038 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 37AE1B952950515D008DA038;
+			remoteInfo = PhotoFlow;
+		};
+		37FCD98429B247E700B9DD65 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 37AE1B8E2950515D008DA038 /* Project object */;
 			proxyType = 1;
@@ -98,6 +106,8 @@
 		37FCD96929B2005300B9DD65 /* ImageListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListService.swift; sourceTree = "<group>"; };
 		37FCD96B29B203E500B9DD65 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		37FCD96D29B2096700B9DD65 /* PhotoResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoResult.swift; sourceTree = "<group>"; };
+		37FCD98029B247E700B9DD65 /* ImageListServiceTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageListServiceTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		37FCD98229B247E700B9DD65 /* ImageListServiceTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListServiceTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +129,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		37AE1BB32950515F008DA038 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		37FCD97D29B247E700B9DD65 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -218,6 +235,7 @@
 				37AE1B982950515D008DA038 /* PhotoFlow */,
 				37AE1BAF2950515F008DA038 /* PhotoFlowTests */,
 				37AE1BB92950515F008DA038 /* PhotoFlowUITests */,
+				37FCD98129B247E700B9DD65 /* ImageListServiceTest */,
 				37AE1B972950515D008DA038 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -228,6 +246,7 @@
 				37AE1B962950515D008DA038 /* PhotoFlow.app */,
 				37AE1BAC2950515F008DA038 /* PhotoFlowTests.xctest */,
 				37AE1BB62950515F008DA038 /* PhotoFlowUITests.xctest */,
+				37FCD98029B247E700B9DD65 /* ImageListServiceTest.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -288,6 +307,14 @@
 				37FCD96D29B2096700B9DD65 /* PhotoResult.swift */,
 			);
 			path = ImageListService;
+			sourceTree = "<group>";
+		};
+		37FCD98129B247E700B9DD65 /* ImageListServiceTest */ = {
+			isa = PBXGroup;
+			children = (
+				37FCD98229B247E700B9DD65 /* ImageListServiceTest.swift */,
+			);
+			path = ImageListServiceTest;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -351,6 +378,24 @@
 			productReference = 37AE1BB62950515F008DA038 /* PhotoFlowUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		37FCD97F29B247E700B9DD65 /* ImageListServiceTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 37FCD98829B247E700B9DD65 /* Build configuration list for PBXNativeTarget "ImageListServiceTest" */;
+			buildPhases = (
+				37FCD97C29B247E700B9DD65 /* Sources */,
+				37FCD97D29B247E700B9DD65 /* Frameworks */,
+				37FCD97E29B247E700B9DD65 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				37FCD98529B247E700B9DD65 /* PBXTargetDependency */,
+			);
+			name = ImageListServiceTest;
+			productName = ImageListServiceTest;
+			productReference = 37FCD98029B247E700B9DD65 /* ImageListServiceTest.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -369,6 +414,10 @@
 						TestTargetID = 37AE1B952950515D008DA038;
 					};
 					37AE1BB52950515F008DA038 = {
+						CreatedOnToolsVersion = 14.1;
+						TestTargetID = 37AE1B952950515D008DA038;
+					};
+					37FCD97F29B247E700B9DD65 = {
 						CreatedOnToolsVersion = 14.1;
 						TestTargetID = 37AE1B952950515D008DA038;
 					};
@@ -395,6 +444,7 @@
 				37AE1B952950515D008DA038 /* PhotoFlow */,
 				37AE1BAB2950515F008DA038 /* PhotoFlowTests */,
 				37AE1BB52950515F008DA038 /* PhotoFlowUITests */,
+				37FCD97F29B247E700B9DD65 /* ImageListServiceTest */,
 			);
 		};
 /* End PBXProject section */
@@ -420,6 +470,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		37AE1BB42950515F008DA038 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		37FCD97E29B247E700B9DD65 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -477,6 +534,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		37FCD97C29B247E700B9DD65 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				37FCD98329B247E700B9DD65 /* ImageListServiceTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -489,6 +554,11 @@
 			isa = PBXTargetDependency;
 			target = 37AE1B952950515D008DA038 /* PhotoFlow */;
 			targetProxy = 37AE1BB72950515F008DA038 /* PBXContainerItemProxy */;
+		};
+		37FCD98529B247E700B9DD65 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 37AE1B952950515D008DA038 /* PhotoFlow */;
+			targetProxy = 37FCD98429B247E700B9DD65 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -760,6 +830,40 @@
 			};
 			name = Release;
 		};
+		37FCD98629B247E700B9DD65 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ermlvgrsh.ImageListServiceTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoFlow.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PhotoFlow";
+			};
+			name = Debug;
+		};
+		37FCD98729B247E700B9DD65 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ermlvgrsh.ImageListServiceTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoFlow.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PhotoFlow";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -795,6 +899,15 @@
 			buildConfigurations = (
 				37AE1BC72950515F008DA038 /* Debug */,
 				37AE1BC82950515F008DA038 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		37FCD98829B247E700B9DD65 /* Build configuration list for PBXNativeTarget "ImageListServiceTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				37FCD98629B247E700B9DD65 /* Debug */,
+				37FCD98729B247E700B9DD65 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
