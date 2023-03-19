@@ -9,7 +9,9 @@ final class ProfileImageService {
     static let shared = ProfileImageService()
     private var token = OAuth2TokenStorage().token
     private(set) var avatarURL: String?
-    static let DidChangeNotification = Notification.Name("ProfileImageProviderDidChange")
+    static let didChangeNotification = Notification.Name("ProfileImageProviderDidChange")
+    
+    private init() {}
     
     func fetchProfileImageURL(username: String,_ completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
@@ -26,7 +28,7 @@ final class ProfileImageService {
                 guard let avatarURL = userResults.profileImage["small"] else { return }
                 completion(.success(avatarURL))
                 NotificationCenter.default
-                    .post(name: ProfileImageService.DidChangeNotification,
+                    .post(name: ProfileImageService.didChangeNotification,
                           object: self,
                           userInfo: ["URL": avatarURL])
             case .failure(let error): completion(.failure(error))

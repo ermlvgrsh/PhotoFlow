@@ -1,5 +1,6 @@
 import UIKit
 import ProgressHUD
+import SwiftKeychainWrapper
 
 final class SplashViewController: UIViewController {
     
@@ -8,10 +9,15 @@ final class SplashViewController: UIViewController {
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
     private var alertProtocol: AlertProtocol?
+    var tokenFlag = UserDefaults.standard.string(forKey: "tokenFlag")
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         createLogo()
+        checkFlag()
    }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -55,6 +61,11 @@ final class SplashViewController: UIViewController {
          return viewController
          
      }
+    private func checkFlag() {
+        if tokenFlag == nil {
+            KeychainWrapper.standard.remove(forKey: "Auth Token")
+        }
+    }
     
     private func presentAuthViewController() {
     guard let authViewController = getViewController(with: "AuthViewController") as? AuthViewController
@@ -62,6 +73,10 @@ final class SplashViewController: UIViewController {
         authViewController.delegate = self
         authViewController.modalPresentationStyle = .fullScreen
         present(authViewController, animated: true)
+    }
+    private func loadingImages() {
+        let imageService = ImageListService.shared
+        imageService.fetchPhotosNextPage()
     }
 }
 
@@ -83,9 +98,10 @@ extension SplashViewController: AuthViewControllerDelegate {
             case .success(let token):
                 self.fetchProfile(token: token)
                 UIBlockingProgressHUD.dismiss()
-            case .failure(let error):
-                self.alertProtocol?.requestAlert()
-                print(error.localizedDescription)
+            case .failure:
+                self.alertProtocol?.requestAlert(title: "Что то пошло не так(", message: "Не удалось войти в систему", buttonText: "ОК")
+
+                
             }
         }
     }
@@ -94,18 +110,22 @@ extension SplashViewController: AuthViewControllerDelegate {
             guard let self = self else { return }
             switch result {
             case .success(let profile):
+                ProgressHUD.show()
+                self.loadingImages()
                 self.profileImageService.fetchProfileImageURL(username: profile.username) { result in
                     switch result {
                     case.success(let avatarURL):
+                        ProgressHUD.dismiss()
                         self.profileImageService.setAvatarURL(avatar: avatarURL)
-                    case.failure(let error):
-                        print("couldn't catch avatar URL - \(error)")
+                    case.failure:
+                        self.alertProtocol?.requestAlert(title: "Ошибка", message: "Не удалось загрузить аватар", buttonText: "ОК")
                     }
                 }
                 UIBlockingProgressHUD.dismiss()
                 self.switchTabBarController()
             case .failure(let error):
-                self.alertProtocol?.requestAlert()
+                self.presentAuthViewController()
+                self.alertProtocol?.requestAlert(title: "Что то пошло не так(", message: "Не удалось войти в систему", buttonText: "ОК")
                 print(error.localizedDescription)
             }
         }

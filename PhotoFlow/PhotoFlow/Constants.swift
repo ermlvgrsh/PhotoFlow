@@ -10,5 +10,5 @@ struct Constants {
     let code = "code"
     let stringMe = "https://api.unsplash.com/me"
     let stringUser = "https://api.unsplash.com/users/"
+    let stringPhotos = "https://api.unsplash.com/photos"
 }
-
