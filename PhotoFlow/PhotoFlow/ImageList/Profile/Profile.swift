@@ -1,20 +1,13 @@
 import Foundation
 
 struct Profile {
-    private let firstName: String
-    private let lastName: String
     let username: String
-    var name: String {
-        return firstName + " " + lastName
-    }
+    var name: String
     let loginName: String
     let bio: String?
  
-    init(from result: ProfileResult) {
-        firstName = result.firstName
-        lastName = result.lastName
-        username = result.username
-        loginName = "@" + username
-        bio = result.bio
+    func convert(from result: ProfileResult) -> Profile {
+        let profile = Profile(username: result.username, name: "\(result.firstName) \(result.lastName)", loginName: "@\(result.username)", bio: result.bio)
+        return profile
     }
 }

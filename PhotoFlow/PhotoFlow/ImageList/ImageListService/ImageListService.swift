@@ -55,8 +55,9 @@ final class ImageListService {
        }
 
        
-       func changeLike(photoID: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
-           
+       func changeLike(photoID: String, isLike: Bool,
+                       _ completion: @escaping (Result<Void, Error>) -> Void) {
+          
            guard var request = isLike ? makeLikeRequest(photoID: photoID) : removeLikeRequest(photoID: photoID),
            let token = token else { return }
            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
@@ -123,7 +124,7 @@ final class ImageListService {
        static func makeHTTPRequest(
            path: String,
            httpMethod: String,
-           baseURL: URL? = Constants().defaultBaseURL
+           baseURL: URL? = AuthConfiguration.standart.defaultBaseURL
        ) -> URLRequest? {
            guard let baseURL = baseURL else { return nil }
            guard let url = URL(string: path, relativeTo: baseURL) else { return nil }

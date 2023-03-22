@@ -8,7 +8,7 @@ final class OAuth2TokenStorage {
     
     private let keyChainWrapper = KeychainWrapper.standard
     private let key = "Auth Token"
-    var flag: Bool?
+    var flag: Bool = false
     var token : String? {
         get {
             return keyChainWrapper.string(forKey: Keys.token.rawValue)

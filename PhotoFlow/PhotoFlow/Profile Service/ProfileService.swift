@@ -7,6 +7,7 @@ final class ProfileService {
     private var lastCode: String?
     static let shared = ProfileService()
     private(set) var profile: Profile?
+    private var configuration = AuthConfiguration.standart
     
     func fetchProfile(token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         assert(Thread.isMainThread)
@@ -15,19 +16,15 @@ final class ProfileService {
         task?.cancel()
         lastCode = token
         
-        let url = URL(string: Constants().stringMe)
+        let url = URL(string: configuration.stringMe)
         var request = URLRequest(url: bindSome(for: url))
         
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         let task = urlSession.objectTask(for: request) { (result: Result<ProfileResult, Error>) in
             switch result {
-            case.success(let json):
-                let profileResult = ProfileResult(username: json.username,
-                                                  firstName: json.firstName,
-                                                  lastName: json.lastName,
-                                                  bio: json.bio)
-                let profile = Profile(from: profileResult)
+            case.success(let profileResult):
+                guard let profile = self.profile?.convert(from: profileResult) else { return }
                 self.profile = profile
                 completion(.success(profile))
             case .failure(let error): completion(.failure(error))

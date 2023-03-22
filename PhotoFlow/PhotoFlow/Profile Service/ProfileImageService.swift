@@ -41,7 +41,7 @@ final class ProfileImageService {
 extension ProfileImageService {
     func makeRequestForImage(username: String, token: String) -> URLRequest {
         
-        let url = URL(string: Constants().stringUser + username)
+        let url = URL(string: AuthConfiguration.standart.stringUser + username)
         var request = URLRequest(url: bindSome(for: url))
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         

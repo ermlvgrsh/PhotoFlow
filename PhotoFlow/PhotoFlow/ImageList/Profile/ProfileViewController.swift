@@ -1,36 +1,32 @@
 import UIKit
 import Kingfisher
-import SwiftKeychainWrapper
-import WebKit
-final class ProfileViewController: UIViewController {
 
-//MARK: Свойства профильного экрана
+
+
+protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    func didFetchProfile(profile: Profile)
+    func didUpdateAvatar(image: UIImage)
+    func present(alert: UIAlertController)
+}
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+    
+    //MARK: Свойства профильного экрана
+    weak var presenter: ProfileViewPresenterProtocol?
     private var profilePictureView: UIImageView?
     private var fullName: UILabel?
     private var nickName: UILabel?
     private var profileDescription: UILabel?
     private var exitButton: UIButton?
-    private let profileService = ProfileService.shared
-    private let token = OAuth2TokenStorage().token
-    private let profileImageService = ProfileImageService.shared
-    private var profileImageServiceObserver: NSObjectProtocol?
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         makeProfilePage()
-        guard let profile = profileService.profile else { return }
-        updateProfileDetails(profile: profile)
-        profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
-            guard let self = self else { return }
-            self.updateAvatar()
+        presenter?.viewDidLoad()
         }
-        updateAvatar()
-    }
     
    
     //MARK: Функции по созданию профильного экрана
@@ -51,6 +47,10 @@ final class ProfileViewController: UIViewController {
         
     }
     
+    func didUpdateAvatar(image: UIImage) {
+        profilePictureView?.image = image
+    }
+    
     private func createProfileDescription() {
         
         guard let profilePictureView = profilePictureView  else { return }
@@ -58,7 +58,7 @@ final class ProfileViewController: UIViewController {
         let fullName = UILabel()
         self.fullName = fullName
         fullName.font = .systemFont(ofSize: 23, weight: .bold)
-        fullName.text = "Екатерина Новикова"
+        fullName.text = "Ermolaev Grigoriy"
         
         fullName.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         fullName.translatesAutoresizingMaskIntoConstraints = false
@@ -68,7 +68,7 @@ final class ProfileViewController: UIViewController {
         self.nickName = nickName
         nickName.textColor = UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1)
         nickName.font = UIFont(name: "System Font Regular", size: 13)
-        nickName.text = "@ekaterina_nov"
+        nickName.text = "@ermlvgrsh"
         nickName.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nickName)
         
@@ -76,7 +76,7 @@ final class ProfileViewController: UIViewController {
         self.profileDescription = profileDescription
         profileDescription.textColor = UIColor.white
         profileDescription.font = UIFont(name: "System Font Regular", size: 13)
-        profileDescription.text = "Hello, World!"
+        profileDescription.text = " "
         profileDescription.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(profileDescription)
         
@@ -91,17 +91,12 @@ final class ProfileViewController: UIViewController {
             profileDescription.topAnchor.constraint(equalTo: nickName.bottomAnchor, constant: 8)
         ])
     }
-    private func cleanWebKitCache() {
-        // Очищаем все куки из хранилища.
-        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
-        // Запрашиваем все данные из локального хранилища.
-        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-            // Массив полученных записей удаляем из хранилища.
-            records.forEach { record in
-                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
-            }
-        }
+    func didFetchProfile(profile: Profile) {
+        self.fullName?.text = profile.name
+        self.profileDescription?.text = profile.bio
+        self.nickName?.text = profile.username
     }
+
     
     private func createExitButton() {
         
@@ -124,45 +119,23 @@ final class ProfileViewController: UIViewController {
         ])
         
     }
-    
-    private func switchToSplashViewController() {
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Fail to switch on SplashView")
-            return
-        }
-        window.rootViewController = SplashViewController()
-        window.makeKeyAndVisible()
-    }
-    
-    private func cleanToken() {
-        KeychainWrapper.standard.removeAllKeys()
-    }
-    
-    @objc
-    private func logout() {
-        
-        let alert = UIAlertController(title: "Пока-пока!",
-                                      message: "Уверены что хотите выйти?",
-                                      preferredStyle: .alert)
-        
-        alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] _ in
-            self?.cleanToken()
-            self?.switchToSplashViewController()
-            self?.cleanWebKitCache()
-        }))
-        alert.addAction(UIAlertAction(title: "Нет", style: .default, handler: { _ in }))
+    func present(alert: UIAlertController) {
         present(alert, animated: true)
+    }
 
+    @objc
+     func logout() {
+        presenter?.logout()
     }
 
     private func makeProfilePage() {
         createExitButton()
         createProfileDescription()
         view.backgroundColor = UIColor(named: "black")
+        makeGradientOnAvatar()
         
     }
     private func makeGradientOnAvatar() {
-        profilePictureView?.image = UIImage(named: "elipse")
         let gradient = CAGradientLayer()
         gradient.frame = CGRect(origin: .zero, size: CGSize(width: 70, height: 70))
         gradient.locations = [0, 0.1, 0.3]
@@ -185,21 +158,4 @@ extension ProfileViewController {
         self.fullName?.text = profile.name
         self.nickName?.text = profile.loginName
     }
-}
-extension ProfileViewController {
-     func updateAvatar() {
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL),
-            let profilePictureView = profilePictureView else { return }
-         let processor = RoundCornerImageProcessor(cornerRadius: 20)
-         profilePictureView.kf.setImage(with: url, options: [.processor(processor)])
-     }
-}
-extension ProfileViewController: AlertDelegate {
-    func didRecieveAlert(_ viewController: UIAlertController) {
-        present(viewController, animated: true)
-    }
-    
-    
 }

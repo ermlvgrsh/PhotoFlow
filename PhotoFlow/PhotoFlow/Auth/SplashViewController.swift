@@ -62,7 +62,7 @@ final class SplashViewController: UIViewController {
          
      }
     private func checkFlag() {
-        if tokenFlag == nil {
+        if tokenFlag != nil {
             KeychainWrapper.standard.remove(forKey: "Auth Token")
         }
     }

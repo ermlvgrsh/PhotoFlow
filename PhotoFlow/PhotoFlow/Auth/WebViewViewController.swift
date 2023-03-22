@@ -1,6 +1,14 @@
 import WebKit
 import UIKit
 
+public protocol WebViewControllerProtocol: AnyObject {
+    var presenter: WebViewPresenterProtocol? { get set }
+    func load(request: URLRequest)
+    func setProgressValue(_ newValue: Float)
+    func setProgressHidden(_ isHidden: Bool)
+}
+
+
 //MARK: Delegate WebViewViewController
 
 protocol WebViewViewControllerDelegate: AnyObject {
@@ -9,31 +17,33 @@ protocol WebViewViewControllerDelegate: AnyObject {
 }
 
 //создаем класс, который отображает страницу логина
-final class WebViewViewController: UIViewController {
+final class WebViewViewController: UIViewController & WebViewControllerProtocol {
     
     //MARK: Свойства экрана WebView
     
+    var presenter: WebViewPresenterProtocol?
     weak var delegate : WebViewViewControllerDelegate?          //инъектируем делегат, для использования методов
     private var webView : WKWebView?                                    //переменная отображающая класс WKWebView
     private var backButton: UIButton?                                       //переменная кнопка назад
     private var progress: UIProgressView?
-    private var service = OAuth2Service.shared
     private var estimatedProgressObservation: NSKeyValueObservation?
     //MARK: Lifecycle WebViewViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
         createWebView()
-        estimatedProgressObservation = webView?.observe(\.estimatedProgress,options: [],changeHandler: { [weak self] _, _  in
-            guard let self = self else { return }
-            self.updateProgress()
-        })
+
     }
     
 
     
     //MARK: Функции для создания UIElements
     
+    
+    func load(request: URLRequest) {
+        guard let webView = webView else { return }
+        webView.load(request)
+    }
     private func createProgressView() {
         let progressTab = UIProgressView()
         progressTab.progressTintColor = UIColor.black
@@ -53,8 +63,7 @@ final class WebViewViewController: UIViewController {
                 progressTab.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             ]
         )
-        
-    }
+   }
     
     private func createWebView() {                              //метод отображающий нашу страницу авторизации
         
@@ -65,21 +74,11 @@ final class WebViewViewController: UIViewController {
         webView.translatesAutoresizingMaskIntoConstraints = false
         
         webView.frame = view.bounds
-        
-        let constant = Constants()                             // создаем эземпляр структуры для использования данных
-        let urlComponents = URLComponents(string: constant.unsplashAuthorizeString) //инициализируем структуру, указываем адрес
-        guard var urlComponents = urlComponents else { return }   //разворачиваем ее, для дальнейшего использования
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: constant.accessKey), //устанаваливаем значение - код доступа
-            URLQueryItem(name: "redirect_uri", value: constant.redirectUri), //значение URI - обработку успеш. автор.
-            URLQueryItem(name: "response_type", value: "code"),             //тип ответа который мы ожидаем - code
-            URLQueryItem(name: "scope", value: constant.accessScope)        //список доступов, разделенных доступом
-        ]
-        guard let url = urlComponents.url else { return }       //разворачиваем получившийся URL
-        let request = URLRequest(url: url)                      //формируем URL запрос
+      
         createButton()
         createProgressView()
-        webView.load(request)
+        guard let presenter = presenter else { return }
+        presenter.viewDidLoad()
         webView.navigationDelegate = self         //делаем WebViewViewController навигационным делегатом для вэбвью
     }
     
@@ -111,19 +110,16 @@ final class WebViewViewController: UIViewController {
         delegate?.webViewViewControllerDidCancel(self)
     }
     
-    private func updateProgress() {
-        guard let progress = progress else { return }
-        guard let webView = webView else { return }
-        progress.progress = Float(webView.estimatedProgress)
-        progress.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    func setProgressValue(_ newValue: Float) {
+        progress?.progress = newValue
     }
-    
+    func setProgressHidden(_ isHidden: Bool) {
+        progress?.isHidden = isHidden
+    }
 
 }
 
 //MARK: Extension WebViewViewController
-
-
 extension WebViewViewController: WKNavigationDelegate {                     // расширение для  вебвью при успеш. автор.
     
     func webView(                                       //метод пользователь  выполняет какие-то навигационые действия
@@ -132,31 +128,20 @@ extension WebViewViewController: WKNavigationDelegate {                     // �
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void   //третий замыкание хэндлер, принимающий 1 из 3 знач
     ) {
         if let code = code(from: navigationAction) { //вызываем метод code возвращающая код авторизации если он получен
-            service.fetchOAuthToken(code) { result in
-                switch result {
-                case .success(_):
-                    self.delegate?.webViewViewController(self, didAuthenticateWithCode: code)
-                case .failure(let error):
-                    print("error \(error.localizedDescription)")
-               }
-            }
-           decisionHandler(.cancel)            //отменяем навигационное действие
+            delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+            decisionHandler(.cancel)            //отменяем навигационное действие
         } else {
             decisionHandler(.allow)             // возможный переход на новую страницу при авторизации
         }
     }
-}
-
-private func code(from navigationAction: WKNavigationAction) -> String? { //метод возвращения кода авторизации
-    if
-        let url = navigationAction.request.url,         //получаем из навигационного действия URL
-        let urlComponents = URLComponents(string: url.absoluteString), //создаем структуру получаем значения компо
-        urlComponents.path == "/oauth/authorize/native", //проверяем совпадает ли адрес запрос с адресом получ.кода
-        let items = urlComponents.queryItems,    //проверяем есть ли в URLC компоненты запроса
-        let codeItems = items.first(where: {$0.name == "code"}) //ищем в массиве компонентов элемент с именем code
-    {
-        return codeItems.value      //если проверки прошли успешно вернуть значение
-    } else {
+    
+    private func code(from navigationAction: WKNavigationAction) -> String? { //метод возвращения кода авторизации
+        if let url = navigationAction.request.url {
+            return presenter?.code(from: url) //получаем из навигационного действия URL в презентере
+        }
         return nil
     }
 }
+
+
+

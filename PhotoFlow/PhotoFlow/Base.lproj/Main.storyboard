@@ -31,12 +31,15 @@
         <!--Web View View Controller-->
         <scene sceneID="ol3-wv-2hi">
             <objects>
-                <viewController id="reX-oC-Z0i" customClass="WebViewViewController" customModule="PhotoFlow" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="WebViewViewController" id="reX-oC-Z0i" customClass="WebViewViewController" customModule="PhotoFlow" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" restorationIdentifier="WebViewViewController" id="RDW-Uy-BMS" customClass="WebViewViewContoller">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <viewLayoutGuide key="safeArea" id="OSF-Th-tjK"/>
                         <color key="backgroundColor" name="white"/>
+                        <accessibility key="accessibilityConfiguration" identifier="WebViewViewController">
+                            <bool key="isElement" value="YES"/>
+                        </accessibility>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1sq-tG-gaG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
