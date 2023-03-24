@@ -6,7 +6,7 @@ let myRedirectUri = "urn:ietf:wg:oauth:2.0:oob"
 let myAccessScope = "public+read_user+write_likes"
 
 let myDefaultBaseURL = URL(string: "https://api.unsplash.com")
-let myUnsplashAuthorizeString = "https://unsplash.com/oauth/authorize/native"
+let myUnsplashAuthorizeString = "https://unsplash.com/oauth/authorize"
 let myCode = "code"
 let myStringMe = "https://api.unsplash.com/me"
 let myStringUser = "https://api.unsplash.com/users/"
@@ -38,7 +38,7 @@ struct AuthConfiguration {
         self.stringPhotos = stringPhotos
     }
     static var standart: AuthConfiguration {
-        return AuthConfiguration(accessKey: myAccessKey, secretKey: mySecretKey, redirectUri: myRedirectUri, accessScope: myAccessKey, defaultBaseURL: bindSome(for: myDefaultBaseURL), authURLString: myUnsplashAuthorizeString, code: myCode, stringMe: myStringMe, stringUser: myStringUser, stringPhotos: myStringPhotos)
+        return AuthConfiguration(accessKey: myAccessKey, secretKey: mySecretKey, redirectUri: myRedirectUri, accessScope: myAccessScope, defaultBaseURL: bindSome(for: myDefaultBaseURL), authURLString: myUnsplashAuthorizeString, code: myCode, stringMe: myStringMe, stringUser: myStringUser, stringPhotos: myStringPhotos)
     }
 
 

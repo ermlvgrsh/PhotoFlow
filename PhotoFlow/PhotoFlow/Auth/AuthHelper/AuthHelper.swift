@@ -33,8 +33,8 @@ struct AuthHelper: AuthHelperProtocol {
         urlComponents?.queryItems = [
             URLQueryItem(name: "client_id", value: configuration.accessKey),
             URLQueryItem(name: "redirect_uri", value: configuration.redirectUri),
-            URLQueryItem(name: "scope", value: configuration.accessScope),
             URLQueryItem(name: "response_type", value: "code"),
+            URLQueryItem(name: "scope", value: configuration.accessScope),
         ]
         guard let url = urlComponents?.url else { return nil }
         return url

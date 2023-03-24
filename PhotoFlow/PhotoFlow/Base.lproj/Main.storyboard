@@ -156,7 +156,7 @@
                     <tabBarItem key="tabBarItem" title="" image="tab_editorial_active" id="P4n-TE-7B9"/>
                     <navigationItem key="navigationItem" id="OX6-Xb-JNc"/>
                     <connections>
-                        <outlet property="tableView" destination="K4r-tf-gCR" id="9MF-P6-Tx7"/>
+                        <outlet property="tableView" destination="K4r-tf-gCR" id="7Me-va-aVR"/>
                         <segue destination="RHN-0g-CtA" kind="presentation" identifier="ShowSingleImage" id="d9r-XH-Lee"/>
                     </connections>
                 </viewController>

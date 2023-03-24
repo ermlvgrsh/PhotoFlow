@@ -69,7 +69,7 @@ extension URLSession {
                     guard 200..<300 ~= statusCode else { return completion(.failure(NetworkError.httpStatusCode(statusCode)))}
                     let decoder = JSONDecoder()
                     guard let json = try? decoder.decode(T.self, from: data) else { return }
-                    completion(.success(bindSome(for: json)))
+                    completion(.success(json))
                     return
                 }
                 return completion(.failure(NetworkError.urlRequestError(error)))

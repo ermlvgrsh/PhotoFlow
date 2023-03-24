@@ -7,7 +7,10 @@ struct Profile {
     let bio: String?
  
     func convert(from result: ProfileResult) -> Profile {
-        let profile = Profile(username: result.username, name: "\(result.firstName) \(result.lastName)", loginName: "@\(result.username)", bio: result.bio)
+        let profile = Profile(username: result.username,
+                              name: "\(result.firstName) \(result.lastName)",
+                              loginName: "@\(result.username)",
+                              bio: result.bio)
         return profile
     }
 }

@@ -10,6 +10,7 @@ final class ImageListService {
     private var task: URLSessionTask?
     private var token = OAuth2Service.shared.authToken
     static let shared = ImageListService()
+    private var lastToken: String?
     
     
     
@@ -17,10 +18,10 @@ final class ImageListService {
         assert(Thread.isMainThread)
         let nextPage = getNextPage()
         
-        guard let token = token,
+        guard let lastToken = token,
               task == nil,
               var request = makePhotoRequest(page: nextPage, perPage: 10) else { return }
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(lastToken)", forHTTPHeaderField: "Authorization")
         
         let task = urlSession.objectTask(for: request) {[weak self] (result: Result<[PhotoResult], Error>) in
             guard let self = self else { return }
