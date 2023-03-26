@@ -1,6 +1,10 @@
 import Foundation
 
-final class ProfileService {
+protocol ProfileServiceProtocol {
+    var profile: Profile? { get }
+    func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void)
+}
+final class ProfileService: ProfileServiceProtocol {
  
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
@@ -9,7 +13,7 @@ final class ProfileService {
     private(set) var profile: Profile?
     private var configuration = AuthConfiguration.standart
     
-    func fetchProfile(token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
+    func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
         assert(Thread.isMainThread)
         
         if lastCode == token { return }
@@ -24,14 +28,21 @@ final class ProfileService {
         let task = urlSession.objectTask(for: request) { (result: Result<ProfileResult, Error>) in
             switch result {
             case.success(let profileResult):
-                guard let profile = self.profile?.convert(from: profileResult) else { return }
-                self.profile = profile
-                completion(.success(profile))
+                let converter = self.convert(from: profileResult)
+                self.profile = converter
+                completion(.success(converter))
             case .failure(let error): completion(.failure(error))
             }
         }
         self.task = task
         task.resume()
+    }
+    func convert(from result: ProfileResult) -> Profile {
+        let profile = Profile(username: result.username,
+                              name: "\(result.firstName) \(result.lastName)",
+                              loginName: "@\(result.username)",
+                              bio: result.bio)
+        return profile
     }
 }
 

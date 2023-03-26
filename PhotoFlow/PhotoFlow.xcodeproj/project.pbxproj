@@ -294,7 +294,6 @@
 			isa = PBXGroup;
 			children = (
 				37A8A46229C9BE2A00F8FAA9 /* ProfileFlowTests.swift */,
-				37A8A47629CDD55900F8FAA9 /* ImageListTests */,
 			);
 			path = ProfileFlowTests;
 			sourceTree = "<group>";
@@ -322,6 +321,7 @@
 				37AE1BB92950515F008DA038 /* PhotoFlowUITests */,
 				37FCD98129B247E700B9DD65 /* ImageListServiceTest */,
 				37E6C14A29C87016006CFBD4 /* WebViewTests */,
+				37A8A47629CDD55900F8FAA9 /* ImageListTests */,
 				37A8A46129C9BE2A00F8FAA9 /* ProfileFlowTests */,
 				37AE1B972950515D008DA038 /* Products */,
 			);

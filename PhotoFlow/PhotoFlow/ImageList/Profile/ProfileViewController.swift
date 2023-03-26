@@ -2,31 +2,48 @@ import UIKit
 import Kingfisher
 
 
-
-protocol ProfileViewControllerProtocol: AnyObject {
+protocol ProfileViewControllerProtocol {
     var presenter: ProfileViewPresenterProtocol? { get set }
-    func didFetchProfile(profile: Profile)
-    func didUpdateAvatar(image: UIImage)
-    func present(alert: UIAlertController)
+    func updateProfileDetails(profile: Profile)
+    func updateAvatar()
 }
+
+
 final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+
     
-    //MARK: Свойства профильного экрана
-    weak var presenter: ProfileViewPresenterProtocol?
+    var presenter: ProfileViewPresenterProtocol?
+//MARK: Свойства профильного экрана
     private var profilePictureView: UIImageView?
     private var fullName: UILabel?
     private var nickName: UILabel?
     private var profileDescription: UILabel?
     private var exitButton: UIButton?
+    private let profileService = ProfileService.shared
+    private let token = OAuth2TokenStorage().token
+    private let profileImageService = ProfileImageService.shared
+    private var profileImageServiceObserver: NSObjectProtocol?
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
+    }
+    
+    func configure(_ presenter: ProfileViewPresenterProtocol) {
+        self.presenter = presenter
+        presenter.view = self
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        makeProfilePage()
         presenter?.viewDidLoad()
+        makeProfilePage()
+        guard let profile = profileService.profile else { return }
+        updateProfileDetails(profile: profile)
+        profileImageServiceObserver = NotificationCenter.default.addObserver(forName: ProfileImageService.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            guard let self = self else { return }
+            self.updateAvatar()
         }
+        updateAvatar()
+    }
     
    
     //MARK: Функции по созданию профильного экрана
@@ -47,10 +64,6 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         
     }
     
-    func didUpdateAvatar(image: UIImage) {
-        profilePictureView?.image = image
-    }
-    
     private func createProfileDescription() {
         
         guard let profilePictureView = profilePictureView  else { return }
@@ -58,7 +71,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         let fullName = UILabel()
         self.fullName = fullName
         fullName.font = .systemFont(ofSize: 23, weight: .bold)
-        fullName.text = "Ermolaev Grigoriy"
+        fullName.text = "Екатерина Новикова"
         
         fullName.textColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
         fullName.translatesAutoresizingMaskIntoConstraints = false
@@ -68,7 +81,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         self.nickName = nickName
         nickName.textColor = UIColor(red: 0.682, green: 0.686, blue: 0.706, alpha: 1)
         nickName.font = UIFont(name: "System Font Regular", size: 13)
-        nickName.text = "@ermlvgrsh"
+        nickName.text = "@ekaterina_nov"
         nickName.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(nickName)
         
@@ -76,7 +89,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         self.profileDescription = profileDescription
         profileDescription.textColor = UIColor.white
         profileDescription.font = UIFont(name: "System Font Regular", size: 13)
-        profileDescription.text = " "
+        profileDescription.text = "Hello, World!"
         profileDescription.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(profileDescription)
         
@@ -91,12 +104,6 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
             profileDescription.topAnchor.constraint(equalTo: nickName.bottomAnchor, constant: 8)
         ])
     }
-    func didFetchProfile(profile: Profile) {
-        self.fullName?.text = profile.name
-        self.profileDescription?.text = profile.bio
-        self.nickName?.text = profile.username
-    }
-
     
     private func createExitButton() {
         
@@ -110,7 +117,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         exitButton.tintColor = UIColor(red: 0.961, green: 0.42, blue: 0.424, alpha: 1)
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(exitButton)
-        
+        exitButton.accessibilityIdentifier = "exitButton"
         NSLayoutConstraint.activate([
             exitButton.widthAnchor.constraint(equalToConstant: 20),
             exitButton.heightAnchor.constraint(equalToConstant: 22),
@@ -119,13 +126,20 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
         ])
         
     }
-    func present(alert: UIAlertController) {
+    
+    
+    @objc func logout() {
+        
+        let alert = UIAlertController(title: "Пока-пока!",
+                                      message: "Уверены что хотите выйти?",
+                                      preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Да", style: .default, handler: { [weak self] _ in
+            self?.presenter?.logout()
+        }))
+        alert.addAction(UIAlertAction(title: "Нет", style: .default, handler: { _ in }))
         present(alert, animated: true)
-    }
 
-    @objc
-     func logout() {
-        presenter?.logout()
     }
 
     private func makeProfilePage() {
@@ -142,4 +156,21 @@ extension ProfileViewController {
         self.fullName?.text = profile.name
         self.nickName?.text = profile.loginName
     }
+}
+extension ProfileViewController {
+    func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL),
+            let profilePictureView = profilePictureView else { return }
+         let processor = RoundCornerImageProcessor(cornerRadius: 20)
+         profilePictureView.kf.setImage(with: url, options: [.processor(processor)])
+     }
+}
+extension ProfileViewController: AlertDelegate {
+    func didRecieveAlert(_ viewController: UIAlertController) {
+        present(viewController, animated: true)
+    }
+    
+    
 }

@@ -9,33 +9,95 @@ import XCTest
 
 final class PhotoFlowUITests: XCTestCase {
 
+    let app = XCUIApplication()
+    
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
-        continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
+       continueAfterFailure = false
+        
         app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
-        }
+    func testAuth() throws {
+        // Нажать кнопку авторизации
+        app.buttons["Authenticate"].tap()
+
+        
+        // Ввести данные в форму
+        let webView = app.webViews["UnsplashWebView"]
+        XCTAssertTrue(webView.waitForExistence(timeout: 5))
+        // Подождать, пока экран авторизации открывается и загружается
+        sleep(10)
+        
+        let loginTextField = webView.descendants(matching: .textField).element
+        
+        XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
+        loginTextField.tap()
+        loginTextField.typeText("chupitobeerpong@gmail.com")
+        
+        let passwordTextField = webView.descendants(matching: .secureTextField).element
+        XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
+        passwordTextField.tap()
+        passwordTextField.typeText("youshalnotpas11")
+
+        
+        app.toolbars.buttons["Done"].tap()
+        // Нажать кнопку логина
+        let loginButton = webView.descendants(matching: .button).element
+        loginButton.tap()
+        // Подождать, пока открывается экран ленты
+        sleep(15)
+        
+        let tables = app.tables
+        let cell = tables.children(matching: .cell).element(boundBy: 0)
+        XCTAssertTrue(cell.waitForExistence(timeout: 5))
+        
+        
+    }
+
+    func testFlow() throws {
+        // Подождать, пока открывается и загружается экран ленты
+        let tablesQuery = app.tables
+        let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
+        // Сделать жест «смахивания» вверх по экрану для его скролла
+        cell.swipeUp()
+        sleep(5)
+        // Поставить лайк в ячейке верхней картинки
+        let cellLikeButton = tablesQuery.children(matching: .cell).element(boundBy: 1)
+        
+        cellLikeButton.buttons["like button on"].tap()
+        cellLikeButton.buttons["like button off"].tap()
+        
+        sleep(5)
+        // Отменить лайк в ячейке верхней картинки
+        cellLikeButton.tap()
+        sleep(5)
+        
+        let image = app.scrollViews.images.element(boundBy: 0)
+        sleep(10)
+        
+        image.pinch(withScale: 3, velocity: 1)
+        image.pinch(withScale: 0.5, velocity: -1)
+        let navButton = app.buttons["nav back button"]
+        navButton.tap()
+
+
+    }
+
+    func testProfile() throws {
+        sleep(5)
+        
+        app.tabBars.element(boundBy: 1).tap()
+        
+        sleep(2)
+        
+        XCTAssertTrue(app.staticTexts["Ermolaev Grigoriy"].exists)
+        XCTAssertTrue(app.staticTexts["@ermlvgrsh"].exists)
+        sleep(2)
+        let exitButton = app.buttons["exitButton"]
+        sleep(2)
+        exitButton.tap()
+        sleep(2)
+        
+        app.alerts["Пока-пока!"].scrollViews.otherElements.buttons["Да"].tap()
     }
 }

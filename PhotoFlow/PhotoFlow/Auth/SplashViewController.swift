@@ -106,7 +106,7 @@ extension SplashViewController: AuthViewControllerDelegate {
         }
     }
     private func fetchProfile(token: String) {
-        profileService.fetchProfile(token: token) { [weak self] result in
+        profileService.fetchProfile(token) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let profile):

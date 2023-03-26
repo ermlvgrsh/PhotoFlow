@@ -3,112 +3,96 @@ import XCTest
 import UIKit
 
 
-final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
-    var presenter: ProfileViewPresenterProtocol?
-    var image: UIImage?
-    var nickName: String?
-    var fullName: String?
-    
-    func didFetchProfile(profile: PhotoFlow.Profile) {
-        self.nickName = profile.loginName
-        self.fullName = profile.name
-    }
-    
-    func didUpdateAvatar(image: UIImage) {
-        self.image = image
-    }
-    
-    func present(alert: UIAlertController) { }
-}
-
 final class ProfileViewPresenterSpy: ProfileViewPresenterProtocol {
     var view: PhotoFlow.ProfileViewControllerProtocol?
+    var profileService: PhotoFlow.ProfileService = PhotoFlow.ProfileService()
     var viewDidLoaded = false
-    var didTapExitButton = false
+    
     func viewDidLoad() {
         viewDidLoaded = true
     }
     
-    func logout() {
-        didTapExitButton = true
-    }
+    func logout() { }
     
     func profileIsLoaded() { }
     
     func profileAvatarIsLoaded() { }
     
+}
+
+final class ProfileViewControllerSpy: ProfileViewControllerProtocol {
+    var presenter: PhotoFlow.ProfileViewPresenterProtocol?
+    var updatedProfileDetails = false
+    var updatedAvatar = false
+    func updateProfileDetails(profile: PhotoFlow.Profile) {
+        updatedProfileDetails = true
+    }
     
+    func updateAvatar() {
+        updatedAvatar = true
+    }
+}
+
+final class ProfileServiceDummy: ProfileServiceProtocol {
+    func convert(from result: PhotoFlow.ProfileResult) -> PhotoFlow.Profile {
+        let profile = Profile(username: result.username,
+                              name: "\(result.firstName) \(result.lastName)",
+                              loginName: "@\(result.username)",
+                              bio: result.bio)
+        return profile
+    }
+    
+    var profile: PhotoFlow.Profile?
+    
+    func fetchProfile(_ token: String, completion: @escaping (Result<PhotoFlow.Profile, Error>) -> Void) {
+    let profileResult = ProfileResult(username: "test", firstName: "for", lastName: "profile", bio: "")
+        let converter = convert(from: profileResult)
+        completion(.success(converter))
+    }
+}
+
+final class ProfileImageServiceDummy: ProfileImageServiceProtocol {
+    var avatarURL: String?
+    
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) { }
 }
 
 
-final class ProfileFlowTests: XCTestCase {
+final class ProfileViewTests: XCTestCase {
     
-    func testViewControllerDidCalled() {
-        //given
-        let view = ProfileViewController()
-        let presenter = ProfileViewPresenterSpy()
-        
-        view.presenter = presenter
-        presenter.view = view
-        
-        //when
-        _ = view.view
-        
-        //then
-        XCTAssertTrue(presenter.viewDidLoaded)
-    }
-    
-    func testCheckingNameAndLogin() {
-        //given
-        let view = ProfileViewControllerSpy()
-        let presenter = ProfileViewPresenter()
-        
-        view.presenter = presenter
-        presenter.view = view
-        
-        let loginName = "@ermlvgrsh"
-        let name = "Ermolaev Grigoriy"
-        let profile = Profile(username: "ermlvgrsh", name: name, loginName: loginName, bio: nil)
-        
-        //when
-        view.didFetchProfile(profile: profile)
-        let actualName = view.fullName
-        let actualNickname = view.nickName
-        
-        //then
-        XCTAssertEqual(loginName, actualNickname)
-        XCTAssertEqual(name , actualName)
-    }
-    
-    func testProfileViewControllerShowsAvatar() {
-        //given
-        let viewController = ProfileViewControllerSpy()
-        let presenter = ProfileViewPresenter()
-        viewController.presenter = presenter
-        presenter.view = viewController
-        guard let expectedImage = UIImage(named: "profilePhoto") else { return }
-        
-        //when
-        presenter.updateAvatarImage(expectedImage)
-        let actualImage = viewController.image
-        
-        //then
-        XCTAssertEqual(expectedImage, actualImage)
-        
-    }
-    
-    func testProfilePresenterTappedLogout() {
-        //given
+    func testViewDidLoad() {
         let viewController = ProfileViewController()
         let presenter = ProfileViewPresenterSpy()
         viewController.presenter = presenter
         presenter.view = viewController
+
+        _ = viewController.view
+
+        XCTAssertTrue(presenter.viewDidLoaded)
+    }
+    
+    func testUpdateProfileDetails() {
+        let viewController = ProfileViewControllerSpy()
+        let presenter = ProfileViewPresenter(profileService: ProfileService(), helper: ProfileHelper())
         
-        //when
-        viewController.logout()
+        viewController.presenter = presenter
+        presenter.view = viewController
         
-        //then
-        XCTAssertTrue(presenter.didTapExitButton)
+        let profileServiceDummy = ProfileServiceDummy()
+        let profileImageServiceDummy = ProfileImageServiceDummy()
         
+        
+        profileServiceDummy.fetchProfile("") { result in
+            switch result {
+            case.success:
+                profileImageServiceDummy.fetchProfileImageURL(username: "") { _ in
+                    presenter.viewDidLoad()
+                    XCTAssertTrue(viewController.updatedProfileDetails)
+                    XCTAssertTrue(viewController.updatedAvatar)
+                }
+            case.failure:
+                XCTFail()
+            }
+        }
     }
 }

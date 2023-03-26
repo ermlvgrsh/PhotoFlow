@@ -10,14 +10,10 @@ final class ImageListViewController: UIViewController, ImageListViewControllerPr
     
     private let showSingleImageSegueIndetifier = "ShowSingleImage"
     private let imageListService = ImageListService.shared
-    internal var photos: [Photo] = []
+    private let alertProtocol: AlertProtocol? = nil
+    var photos: [Photo] = []
     var presenter: ImageListViewPresenterProtocol?
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
-        return formatter
-    }()
+
     
     func configure(_ presenter: ImageListViewPresenterProtocol) {
         self.presenter = presenter
@@ -37,6 +33,8 @@ final class ImageListViewController: UIViewController, ImageListViewControllerPr
         tableView.delegate = self                                               //устанавливаем делегат тэйблВью
         tableView.dataSource = self                                             //устанавливаем датаСоурс тэйблВью
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)   //устанавливаем размер ячейки
+        let presenter = ImageListViewPresenter()
+        self.configure(presenter)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -53,14 +51,12 @@ final class ImageListViewController: UIViewController, ImageListViewControllerPr
     
     
     func updateTableViewAnimated() {
-        let oldCount = photos.count
+        let previousCount = photos.count
         let newCount = imageListService.photos.count
         photos = imageListService.photos
-        if oldCount != newCount {
+        if previousCount != newCount {
             tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<newCount).map { i in
-                    IndexPath(row: i, section: 0)
-                }
+                let indexPaths = (previousCount..<newCount).map { IndexPath(row: $0, section: 0) }
                 tableView.insertRows(at: indexPaths, with: .automatic)
             } completion: { _ in }
         }
@@ -69,10 +65,23 @@ final class ImageListViewController: UIViewController, ImageListViewControllerPr
 
 extension ImageListViewController: ImageListCellDelegate {
     func didTapLikeButton(_ cell: ImageListCell) {
-        guard let indexPath = tableView?.indexPath(for: cell) else { return }
-             let photo = photos[indexPath.row]
-             presenter?.changeLikeStatus(for: photo, isLiked: !photo.isLiked)
-    }
+               guard let indexPath = tableView.indexPath(for: cell) else { return }
+               let photo = photos[indexPath.row]
+               UIBlockingProgressHUD.show()
+               imageListService.changeLike(photoID: photo.id, isLike: !photo.isLiked) { [weak self] result in
+                   guard let self = self else { return }
+                   switch result {
+                   case .success():
+                       self.photos = self.imageListService.photos
+                       cell.setLike(for: cell, isLiked: self.photos[indexPath.row].isLiked)
+                       self.tableView.reloadData()
+                       UIBlockingProgressHUD.dismiss()
+                   case .failure(let error):
+                       print(error)
+                       self.alertProtocol?.requestAlert(title: "Ошибка сети", message: "Не удалось поставить лайк", buttonText: "OK")
+                   }
+               }
+           }
     
 }
 
@@ -107,8 +116,7 @@ extension ImageListViewController: UITableViewDataSource {
 extension ImageListViewController {
     func configCell(for cell: ImageListCell, with indexPath: IndexPath) {
         let photo = photos[indexPath.row]
-        getDate(for: cell, photo: photo)
-        setLike(for: cell, isLiked: photo.isLiked)
+        cell.getDate(for: cell, photo: photo)
         cell.delegate = self
         let url = URL(string: photo.thumbImageURL)
         
@@ -117,21 +125,6 @@ extension ImageListViewController {
             
             self.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
-    }
-    
-    func getDate(for cell: ImageListCell, photo: Photo) {
-        if let date = photo.createdAt {
-            cell.cellDate.text = dateFormatter.string(from: date)
-        } else {
-            cell.cellDate.text = nil
-        }
-    }
-
-     func setLike(for cell: ImageListCell, isLiked: Bool) {
-        let active = UIImage(named: "like")
-        let noActive = UIImage(named: "dont_like")
-        let likedOrNot = isLiked ? active : noActive
-        cell.cellButton.setImage(likedOrNot, for: .normal)
     }
 }
 

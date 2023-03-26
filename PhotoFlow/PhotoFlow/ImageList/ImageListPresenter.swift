@@ -1,11 +1,9 @@
-import Foundation
 import Kingfisher
 import UIKit
 
 protocol ImageListViewPresenterProtocol {
     var view: ImageListViewControllerProtocol? { get set }
     func viewDidLoad()
-    func changeLikeStatus(for photo: Photo, isLiked: Bool)
     func setNotification()
     func fetchPhotosNextPage()
 }
@@ -29,20 +27,6 @@ final class ImageListViewPresenter: ImageListViewPresenterProtocol {
         setNotification()
     }
 
-    func changeLikeStatus(for photo: Photo, isLiked: Bool) {
-        UIBlockingProgressHUD.show()
-        imageListService.changeLike(photoID: photo.id, isLike: photo.isLiked) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success:
-                self.photos = self.imageListService.photos
-                UIBlockingProgressHUD.dismiss()
-            case .failure(let error):
-                print(error)
-                self.alertProtocol?.requestAlert(title: "Ошибка сети", message: "Не удалось поставить лайк", buttonText: "OK")
-            }
-        }
-    }
     
     func fetchPhotosNextPage() {
         imageListService.fetchPhotosNextPage()
@@ -60,6 +44,7 @@ final class ImageListViewPresenter: ImageListViewPresenterProtocol {
             view?.updateTableViewAnimated()
         }
     }
+
 }
 
 

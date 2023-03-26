@@ -12,8 +12,6 @@ final class ImageListViewPresenterSpy: ImageListViewPresenterProtocol {
         viewDidLoaded = true
     }
     
-    func changeLikeStatus(for photo: PhotoFlow.Photo, isLiked: Bool) { }
-    
     func setNotification() {
         notificationIsSet = true
     }
@@ -28,7 +26,6 @@ final class ImageListViewControllerSpy: ImageListViewControllerProtocol {
     var tableViewAnimated = false
     
     func updateTableViewAnimated() {
-        presenter?.setNotification()
         tableViewAnimated = true
     }
     
@@ -86,6 +83,8 @@ import XCTest
          //given
          let viewController = ImageListViewControllerSpy()
          let presenter = ImageListViewPresenter()
+         viewController.presenter = presenter
+         presenter.view = viewController
          
          //when
          presenter.setNotification()

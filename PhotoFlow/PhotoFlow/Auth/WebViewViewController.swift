@@ -70,7 +70,7 @@ final class WebViewViewController: UIViewController & WebViewControllerProtocol 
         let webView = WKWebView()                               //создаем экземпляр класс ВебВью
         self.webView = webView                    // присваиваем экземпляр класса к экземпляру метода
         view.addSubview(webView)                  //добавляем на вью наш вэбвью
-        
+        webView.accessibilityIdentifier = "UnsplashWebView"
         webView.translatesAutoresizingMaskIntoConstraints = false
         
         webView.frame = view.bounds
