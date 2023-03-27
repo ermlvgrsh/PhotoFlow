@@ -7,7 +7,7 @@ enum NetworkError: Error {
     case urlSessionError
 }
 
-private let defaultBaseURL = Constants().defaultBaseURL
+private let defaultBaseURL = AuthConfiguration.standart.defaultBaseURL
 
 //реализуем класс, который взаимодействует с авторизацией на сервисе ансплэш
 final class OAuth2Service {
@@ -96,9 +96,9 @@ extension OAuth2Service {
         
         let urlString = "https://unsplash.com/oauth/token"
         var urlComponents = URLComponents(string: urlString)
-        urlComponents?.queryItems = [URLQueryItem(name: "client_id", value: Constants().accessKey),
-                                     URLQueryItem(name: "client_secret", value: Constants().secretKey),
-                                     URLQueryItem(name: "redirect_uri", value: Constants().redirectUri),
+        urlComponents?.queryItems = [URLQueryItem(name: "client_id", value: AuthConfiguration.standart.accessKey),
+                                     URLQueryItem(name: "client_secret", value: AuthConfiguration.standart.secretKey),
+                                     URLQueryItem(name: "redirect_uri", value: AuthConfiguration.standart.redirectUri),
                                      URLQueryItem(name: "code", value: code),
                                      URLQueryItem(name: "grant_type", value: "authorization_code"),
         ]

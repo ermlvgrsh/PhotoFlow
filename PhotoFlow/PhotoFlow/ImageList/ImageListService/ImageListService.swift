@@ -123,7 +123,7 @@ final class ImageListService {
        static func makeHTTPRequest(
            path: String,
            httpMethod: String,
-           baseURL: URL? = Constants().defaultBaseURL
+           baseURL: URL? = AuthConfiguration.standart.defaultBaseURL
        ) -> URLRequest? {
            guard let baseURL = baseURL else { return nil }
            guard let url = URL(string: path, relativeTo: baseURL) else { return nil }
