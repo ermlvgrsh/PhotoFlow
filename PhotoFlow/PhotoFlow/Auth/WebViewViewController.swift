@@ -29,13 +29,20 @@ final class WebViewViewController: UIViewController & WebViewControllerProtocol 
     private var estimatedProgressObservation: NSKeyValueObservation?
     //MARK: Lifecycle WebViewViewController
     
+ 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         createWebView()
-
+        webView?.accessibilityIdentifier = "UnsplashWebView"
+        presenter?.viewDidLoad()
     }
     
-
+//    func configure(_ presenter: WebViewPresenterProtocol) {
+//        var presenter = presenter
+//        self.presenter = presenter
+//        presenter.view = self
+//    }
     
     //MARK: Функции для создания UIElements
     
@@ -70,15 +77,13 @@ final class WebViewViewController: UIViewController & WebViewControllerProtocol 
         let webView = WKWebView()                               //создаем экземпляр класс ВебВью
         self.webView = webView                    // присваиваем экземпляр класса к экземпляру метода
         view.addSubview(webView)                  //добавляем на вью наш вэбвью
-        webView.accessibilityIdentifier = "UnsplashWebView"
+        
         webView.translatesAutoresizingMaskIntoConstraints = false
         
         webView.frame = view.bounds
       
         createButton()
         createProgressView()
-        guard let presenter = presenter else { return }
-        presenter.viewDidLoad()
         webView.navigationDelegate = self         //делаем WebViewViewController навигационным делегатом для вэбвью
     }
     

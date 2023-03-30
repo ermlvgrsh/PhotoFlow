@@ -12,25 +12,24 @@ final class PhotoFlowUITests: XCTestCase {
 
     func testAuth() throws {
         // Нажать кнопку авторизации
-        app.buttons["Authenticate"].tap()
+        app.buttons["Войти"].tap()
 
         
         // Ввести данные в форму
         let webView = app.webViews["UnsplashWebView"]
         XCTAssertTrue(webView.waitForExistence(timeout: 5))
         // Подождать, пока экран авторизации открывается и загружается
-        sleep(10)
-        
+        sleep(7)
         let loginTextField = webView.descendants(matching: .textField).element
         
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
         loginTextField.tap()
-        loginTextField.typeText("test")
-
+        loginTextField.typeText("chupitobeerpong@gmail.com")
+        app.toolbars.buttons["Done"].tap()
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         passwordTextField.tap()
-        passwordTextField.typeText("test")
+        passwordTextField.typeText("youshalnotpas11")
         app.toolbars.buttons["Done"].tap()
         // Нажать кнопку логина
         let loginButton = webView.descendants(matching: .button).element
@@ -76,6 +75,15 @@ final class PhotoFlowUITests: XCTestCase {
         let tables = app.tables
         XCTAssertTrue(cell.waitForExistence(timeout: 5))
         
+        
+    }
+    func testCheck() throws {
+        
+        let app = XCUIApplication()
+        let button = app.buttons["Войти"]
+        button.tap()
+        app.buttons["chevron"].tap()
+        button.tap()
         
     }
 

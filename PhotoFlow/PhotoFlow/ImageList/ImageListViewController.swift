@@ -11,13 +11,22 @@ final class ImageListViewController: UIViewController, ImageListViewControllerPr
     private let showSingleImageSegueIndetifier = "ShowSingleImage"
     private let imageListService = ImageListService.shared
     private let alertProtocol: AlertProtocol? = nil
-    var photos: [Photo] = []
+    var photos: [Photo] = [] {
+        didSet {
+            if photos.isEmpty {
+                print("empty array")
+            } else {
+                print("array has \(photos.count) photos")
+            }
+        }
+    }
     var presenter: ImageListViewPresenterProtocol?
 
     
     func configure(_ presenter: ImageListViewPresenterProtocol) {
+        var presenter = presenter
         self.presenter = presenter
-        self.presenter?.view = self
+        presenter.view = self
     }
     //MARK: IBOutlets
     @IBOutlet private var tableView: UITableView!
@@ -33,7 +42,7 @@ final class ImageListViewController: UIViewController, ImageListViewControllerPr
         tableView.delegate = self                                               //устанавливаем делегат тэйблВью
         tableView.dataSource = self                                             //устанавливаем датаСоурс тэйблВью
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)   //устанавливаем размер ячейки
-        let presenter = ImageListViewPresenter()
+        guard let presenter = presenter else { return }
         self.configure(presenter)
     }
     
@@ -56,7 +65,10 @@ final class ImageListViewController: UIViewController, ImageListViewControllerPr
         photos = imageListService.photos
         if previousCount != newCount {
             tableView.performBatchUpdates {
-                let indexPaths = (previousCount..<newCount).map { IndexPath(row: $0, section: 0) }
+                let indexPaths = (previousCount..<newCount).map { row in
+                    IndexPath(row: row, section: 0)
+                    
+                }
                 tableView.insertRows(at: indexPaths, with: .automatic)
             } completion: { _ in }
         }
@@ -65,7 +77,7 @@ final class ImageListViewController: UIViewController, ImageListViewControllerPr
 
 extension ImageListViewController: ImageListCellDelegate {
     func didTapLikeButton(_ cell: ImageListCell) {
-               guard let indexPath = tableView.indexPath(for: cell) else { return }
+               guard var indexPath = tableView.indexPath(for: cell) else { return }
                let photo = photos[indexPath.row]
                UIBlockingProgressHUD.show()
                imageListService.changeLike(photoID: photo.id, isLike: !photo.isLiked) { [weak self] result in
