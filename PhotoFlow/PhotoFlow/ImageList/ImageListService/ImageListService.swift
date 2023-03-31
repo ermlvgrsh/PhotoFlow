@@ -27,31 +27,30 @@ final class ImageListService {
             switch result {
             case .success(let photoResult):
                DispatchQueue.main.async {
-                   let photo = self.convertToPhoto(from: photoResult)
-                    NotificationCenter.default
-                        .post(name: ImageListService.didChangeNotification,
-                              object: self,
-                              userInfo: ["photo": photo])
-                    self.photos += photo
-                    self.task = nil
+                   photoResult.forEach { result in
+                       let photo = self.convertToPhoto(from: result)
+                       self.photos.append(photo)
+                       NotificationCenter.default.post(
+                        name: ImageListService.didChangeNotification,
+                        object: self,
+                        userInfo: ["photos" : self.photos])
+                   }
                 }
             case.failure(let error): assertionFailure("Couldn't catch Flow - \(error)")
             }
         }
+        self.task = task
         task.resume()
     }
-    private func convertToPhoto(from photoResult: [PhotoResult]) -> [Photo] {
-           let photo = photoResult.map { photo in
-               Photo(id: photo.id,
-                     size: CGSize(width: photo.width, height: photo.height),
-                     createdAt: self.convertDate(from: photo.createdAt),
-                     welcomeDescription: photo.description,
-                     thumbImageURL: photo.urls.thumb,
-                     largeImageURL: photo.urls.full,
-                     isLiked: photo.isLiked)
-               
-           }
-           return photo
+    
+    private func convertToPhoto(from photoResult: PhotoResult) -> Photo {
+        return Photo(id: photoResult.id,
+                     size: CGSize(width: photoResult.width, height: photoResult.height),
+                     createdAt: self.convertDate(from:photoResult.createdAt),
+                     welcomeDescription: photoResult.description,
+                     thumbImageURL: photoResult.urls.thumb,
+                     largeImageURL: photoResult.urls.full,
+                     isLiked: photoResult.isLiked)
        }
 
        

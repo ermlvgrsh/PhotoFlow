@@ -86,7 +86,6 @@ extension ImageListViewController: ImageListCellDelegate {
                    case .success():
                        self.photos = self.imageListService.photos
                        cell.setLike(for: cell, isLiked: self.photos[indexPath.row].isLiked)
-                       self.tableView.reloadData()
                        UIBlockingProgressHUD.dismiss()
                    case .failure(let error):
                        print(error)

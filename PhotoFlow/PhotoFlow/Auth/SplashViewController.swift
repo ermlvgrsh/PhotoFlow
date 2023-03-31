@@ -74,10 +74,6 @@ final class SplashViewController: UIViewController {
         authViewController.modalPresentationStyle = .fullScreen
         present(authViewController, animated: true)
     }
-    private func loadingImages() {
-        let imageService = ImageListService.shared
-        imageService.fetchPhotosNextPage()
-    }
 }
 
 
@@ -100,8 +96,6 @@ extension SplashViewController: AuthViewControllerDelegate {
                 UIBlockingProgressHUD.dismiss()
             case .failure:
                 self.alertProtocol?.requestAlert(title: "Что то пошло не так(", message: "Не удалось войти в систему", buttonText: "ОК")
-
-                
             }
         }
     }
@@ -111,7 +105,6 @@ extension SplashViewController: AuthViewControllerDelegate {
             switch result {
             case .success(let profile):
                 ProgressHUD.show()
-                self.loadingImages()
                 self.profileImageService.fetchProfileImageURL(username: profile.username) { result in
                     switch result {
                     case.success(let avatarURL):

@@ -24,12 +24,12 @@ final class PhotoFlowUITests: XCTestCase {
         
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 5))
         loginTextField.tap()
-        loginTextField.typeText("chupitobeerpong@gmail.com")
+        loginTextField.typeText("test")
         app.toolbars.buttons["Done"].tap()
         let passwordTextField = webView.descendants(matching: .secureTextField).element
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 5))
         passwordTextField.tap()
-        passwordTextField.typeText("youshalnotpas11")
+        passwordTextField.typeText("test")
         app.toolbars.buttons["Done"].tap()
         // Нажать кнопку логина
         let loginButton = webView.descendants(matching: .button).element
@@ -54,8 +54,9 @@ final class PhotoFlowUITests: XCTestCase {
         // Поставить лайк в ячейке верхней картинки
         let cellLikeButton = tablesQuery.children(matching: .cell).element(boundBy: 1)
         
-        cellLikeButton.buttons["like button on"].tap()
-        cellLikeButton.buttons["like button off"].tap()
+        cellLikeButton.buttons["likeButton"].tap()
+        sleep(5)
+        cellLikeButton.buttons["likeButton"].tap()
         
         sleep(5)
         // Отменить лайк в ячейке верхней картинки
@@ -67,37 +68,26 @@ final class PhotoFlowUITests: XCTestCase {
         
         image.pinch(withScale: 3, velocity: 1)
         image.pinch(withScale: 0.5, velocity: -1)
-        let navButton = app.buttons["nav back button"]
+        let navButton = app.buttons["navBackButton"]
         navButton.tap()
 
-
-        
-        let tables = app.tables
         XCTAssertTrue(cell.waitForExistence(timeout: 5))
         
         
     }
-    func testCheck() throws {
-        
-        let app = XCUIApplication()
-        let button = app.buttons["Войти"]
-        button.tap()
-        app.buttons["chevron"].tap()
-        button.tap()
-        
-    }
+
 
     func testProfile() throws {
         sleep(5)
         
-        app.tabBars.element(boundBy: 1).tap()
+        app.tabBars.buttons.element(boundBy: 1).tap()
         
         sleep(2)
         
-        XCTAssertTrue(app.staticTexts["Ermolaev Grigoriy"].exists)
+        XCTAssertTrue(app.staticTexts["Grigoriy Ermolaev"].exists)
         XCTAssertTrue(app.staticTexts["@ermlvgrsh"].exists)
         sleep(2)
-        let exitButton = app.buttons["exitButton"]
+        let exitButton = app.buttons["ipad.and.arrow"]
         sleep(2)
         exitButton.tap()
         sleep(2)

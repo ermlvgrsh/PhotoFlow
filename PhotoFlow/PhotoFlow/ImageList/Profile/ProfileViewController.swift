@@ -34,6 +34,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        exitButton?.accessibilityIdentifier = "exitButton"
         presenter?.viewDidLoad()
         makeProfilePage()
         guard let profile = profileService.profile else { return }

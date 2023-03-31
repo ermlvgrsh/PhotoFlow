@@ -88,6 +88,7 @@
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0gF-ve-zwI" userLabel="Like Button">
                                                     <rect key="frame" x="335" y="0.0" width="42" height="42"/>
+                                                    <accessibility key="accessibilityConfiguration" identifier="likeButton"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="42" id="Eum-Oz-e75"/>
                                                         <constraint firstAttribute="height" constant="42" id="L2w-Le-Sn8"/>
@@ -190,6 +191,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="amo-XZ-M2Y" userLabel="Back Button">
                                 <rect key="frame" x="8" y="67" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="navBackButton"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="NSF-uj-Gux"/>
                                     <constraint firstAttribute="width" constant="48" id="fnU-Mk-IQe"/>
