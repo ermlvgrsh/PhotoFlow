@@ -9,6 +9,12 @@ final class ImageListCell: UITableViewCell {
     static let reuseIdentifier = "ImageListCell"
     var imageURL: URL?
     var delegate: ImageListCellDelegate?
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        return formatter
+    }()
     
     //MARK: Outlets
     @IBOutlet var cellImage: UIImageView!
@@ -26,4 +32,18 @@ final class ImageListCell: UITableViewCell {
     @IBAction private func didTapLikeButton() {
         delegate?.didTapLikeButton(self)
     }
+    func getDate(for cell: ImageListCell, photo: Photo) {
+        if let date = photo.createdAt {
+            cell.cellDate.text = dateFormatter.string(from: date)
+        } else {
+            cell.cellDate.text = nil
+        }
+    }
+    func setLike(for cell: ImageListCell, isLiked: Bool) {
+       let active = UIImage(named: "like")
+       let noActive = UIImage(named: "dont_like")
+       let likedOrNot = isLiked ? active : noActive
+       cell.cellButton.setImage(likedOrNot, for: .normal)
+   }
 }
+

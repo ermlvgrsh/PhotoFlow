@@ -62,7 +62,7 @@ final class SplashViewController: UIViewController {
          
      }
     private func checkFlag() {
-        if tokenFlag == nil {
+        if tokenFlag != nil {
             KeychainWrapper.standard.remove(forKey: "Auth Token")
         }
     }
@@ -73,10 +73,6 @@ final class SplashViewController: UIViewController {
         authViewController.delegate = self
         authViewController.modalPresentationStyle = .fullScreen
         present(authViewController, animated: true)
-    }
-    private func loadingImages() {
-        let imageService = ImageListService.shared
-        imageService.fetchPhotosNextPage()
     }
 }
 
@@ -100,18 +96,15 @@ extension SplashViewController: AuthViewControllerDelegate {
                 UIBlockingProgressHUD.dismiss()
             case .failure:
                 self.alertProtocol?.requestAlert(title: "Что то пошло не так(", message: "Не удалось войти в систему", buttonText: "ОК")
-
-                
             }
         }
     }
     private func fetchProfile(token: String) {
-        profileService.fetchProfile(token: token) { [weak self] result in
+        profileService.fetchProfile(token) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let profile):
                 ProgressHUD.show()
-                self.loadingImages()
                 self.profileImageService.fetchProfileImageURL(username: profile.username) { result in
                     switch result {
                     case.success(let avatarURL):
