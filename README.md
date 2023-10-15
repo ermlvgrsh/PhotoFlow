@@ -3,6 +3,7 @@ PhotoFlow - the multi-page application is designed for viewing images through th
 
 ## **Links**
 [Design Figma](https://www.figma.com/file/HyDfKh5UVPOhPZIhBqIm3q/Image-Feed-(YP)?type=design&node-id=318-1469&mode=design&t=87ihA4MlRvrOVm3j-0)
+
 [Unsplash API](https://unsplash.com/documentation)
 
 ## **Application description and purpose**
