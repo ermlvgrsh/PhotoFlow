@@ -11,7 +11,7 @@ This application with multiple pages is created for the purpose of viewing image
 - Browse an infinite flow of pictures from Unsplash Editorial;
 - View brief information from the user's profile;
   
-![Flow scrollView] (https://www.figma.com/file/HyDfKh5UVPOhPZIhBqIm3q/Image-Feed-(YP)?type=design&node-id=320-7485&mode=design&t=87ihA4MlRvrOVm3j-4)
+<img src="https://www.figma.com/file/HyDfKh5UVPOhPZIhBqIm3q/Image-Feed-(YP)?type=design&node-id=320-7485&mode=design&t=87ihA4MlRvrOVm3j-4" alt="Flow scrollView">
 
   ## **Purpose**
 - In the application, authorization via OAuth Unsplash is required;
